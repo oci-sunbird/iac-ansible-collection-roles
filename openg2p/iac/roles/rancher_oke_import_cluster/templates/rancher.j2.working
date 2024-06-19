@@ -1,0 +1,71 @@
+
+
+
+terraform {
+  required_providers {
+    rancher2 = {
+      source  = "rancher/rancher2"
+      version = "4.1.0"
+    }
+  }
+}
+
+provider "rancher2" {
+  alias = "admin"
+  api_url   = module.bootstrap.url
+  token_key = module.bootstrap.token
+}
+
+variable "server_url" {
+  default = "https://{{rancher_hostname}}"
+}
+
+variable "admin_password" {
+  default = "{{rancher_admin_password}}"
+}
+
+
+module "bootstrap" {
+  source                         = "./bootstrap"
+  server_url                     = var.server_url
+  admin_password                 = var.admin_password
+}
+
+resource "rancher2_setting" "server_url" {
+  provider = rancher2.admin
+  name     = "server-url"
+  value    = var.server_url
+}
+
+resource "rancher2_cluster" "openg2p_k8s_cluster" {
+  provider    = rancher2.admin
+  name        = "{{oke_k8s_cluster_name | replace("_", "-") }}"
+  description = "OpenG2P K8S Cluster"
+}
+
+
+resource "null_resource" "run_kubectl" {
+  provisioner "local-exec" {
+    command     = <<-EOT
+          ${rancher2_cluster.openg2p_k8s_cluster.cluster_registration_token[0].command}
+    EOT
+    working_dir = path.module
+  }
+  
+  triggers = {
+    token = rancher2_cluster.openg2p_k8s_cluster.cluster_registration_token[0].token
+  }
+  depends_on = [
+    rancher2_cluster.openg2p_k8s_cluster
+  ]
+}
+
+
+output "cluster_registration_token" {
+  sensitive = true
+  value     = rancher2_cluster.openg2p_k8s_cluster.cluster_registration_token[0].token
+}
+
+output "cluster_registration_command" {
+  value     = rancher2_cluster.openg2p_k8s_cluster.cluster_registration_token[0].command
+}

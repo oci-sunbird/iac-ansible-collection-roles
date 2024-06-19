@@ -1,0 +1,53 @@
+#!/bin/bash
+# Creates configmap and secrets for SMTP and SMS
+## Usage: ./install.sh [kubeconfig]
+
+
+if [ $# -ge 1 ] ; then
+  export KUBECONFIG=$1
+fi
+
+NS=msg-gateways
+
+function create_namespace() {
+    if kubectl get namespace $NS &> /dev/null; then
+    echo "Namespace $NS exists."
+    else
+    echo "Namespace $NS does not exist. Creating namespace $NS"
+    kubectl create namespace $NS
+    fi    
+}
+
+function msg_gateway() {
+  echo Istio label
+  kubectl label ns $NS istio-injection=enabled --overwrite
+
+  SMTP_HOST={{smtp_host}}
+  SMS_HOST={{sms_host}}
+  SMTP_PORT={{smtp_port}}
+  SMS_PORT={{sms_port}}
+  SMTP_USER={{smtp_user}}
+  SMS_USER={{sms_user}}
+  SMTP_SECRET="'{{smtp_secret}}'"
+  SMS_SECRET="'{{sms_secret}}'"
+  SMS_AUTHKEY="authkey"
+
+  kubectl -n $NS delete --ignore-not-found=true configmap msg-gateway
+  kubectl -n $NS create configmap msg-gateway --from-literal="smtp-host=$SMTP_HOST" --from-literal="sms-host=$SMS_HOST" --from-literal="smtp-port=$SMTP_PORT" --from-literal="sms-port=$SMS_PORT" --from-literal="smtp-username=$SMTP_USER" --from-literal="sms-username=$SMS_USER"
+  kubectl -n $NS delete --ignore-not-found=true secret msg-gateway
+  kubectl -n $NS create secret generic msg-gateway --from-literal="smtp-secret=$SMTP_SECRET" --from-literal="sms-secret=$SMS_SECRET" --from-literal="sms-authkey=$SMS_AUTHKEY" --dry-run=client  -o yaml | kubectl apply -f -
+
+
+  return 0
+}
+
+# set commands for error handling.
+set -e
+set -o errexit   ## set -e : exit the script if any statement returns a non-true return value
+set -o nounset   ## set -u : exit the script if you try to use an uninitialised variable
+set -o errtrace  # trace ERR through 'time command' and other functions
+set -o pipefail  # trace ERR through pipes
+
+echo Create $NS namespace
+create_namespace
+msg_gateway   # calling function

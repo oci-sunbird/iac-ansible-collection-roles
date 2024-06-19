@@ -1,0 +1,44 @@
+- name: Add a mosip helm repository
+  kubernetes.core.helm_repository:
+    name: mosip
+    repo_url: https://mosip.github.io/mosip-helm
+
+- name: Clone MOSIP Deployment Repo
+  ansible.builtin.git:
+    repo: https://github.com/mosip/mosip-infra.git
+    dest: /root/mosip-infra
+    single_branch: yes
+    version: v1.2.0.1
+
+- name: Create global config directory
+  file:
+    path: "/root/mosip/minio"
+    state: directory
+    mode: '0755'
+
+- name: Copy deployment  script
+  copy:
+    src: "minio/{{ item }}"
+    dest: "/root/mosip/minio/{{ item }}"
+    mode: '0755'
+  with_items:
+    - install.sh
+
+
+- name: Install minio
+  shell: |
+    cd /root/mosip/minio/
+    ./install.sh
+
+- name: Wait for deployments in minio namespace
+  shell: bash /root/check_deployment.sh minio
+
+
+- name: Copy S3 credential setup scripts
+  template:
+    src: s3/cred.j2
+    dest: "/root/mosip/minio/cred.sh"
+    mode: '0755'
+
+- name: S3 credential setup
+  shell: bash /root/mosip/minio/cred.sh

@@ -1,0 +1,10 @@
+[Unit]
+Description=wireguard docker compose unit
+After=docker.service
+
+[Service]
+ExecStart=/usr/bin/docker compose -f {{ wireguard_compose_location }}/docker-compose.yml up
+ExecStop=/usr/bin/docker compose -f {{ wireguard_compose_location }}/docker-compose.yml down
+
+[Install]
+WantedBy=docker.service

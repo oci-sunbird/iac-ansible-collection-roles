@@ -1,0 +1,4 @@
+docker_extra_ebs_volume_id: extra_vol_id
+docker_extra_volume_name: docker-extra
+docker_extra_vol_mount: false
+cloud_platform: oci

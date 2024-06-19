@@ -1,0 +1,15 @@
+base_domain: all
+postgres_replica: 3
+postgres_storage_class: longhorn
+postgres_data_size: 1Gi
+postgres_connectionInfo_username: registry
+postgress_db_host: postgres-cluster-rw
+db_url: postgres://{{postgres_connectionInfo_username}}:{{postgres_connectionInfo_password}}@{{postgress_db_host}}:5432/registry
+claims_ms_db_url: jdbc:postgresql://{{postgress_db_host}}:5432/registry
+registry_db_url: jdbc:postgresql://{{postgress_db_host}}:5432/registry
+elastic_search_storage_class: longhorn
+filestorage_storage_class: longhorn
+elastic_search_storage_size: 1Gi
+filestorage_storage_size: 1Gi
+certificate_email: user@yopmail.com
+acme_server: https://acme-staging-v02.api.letsencrypt.org/directory

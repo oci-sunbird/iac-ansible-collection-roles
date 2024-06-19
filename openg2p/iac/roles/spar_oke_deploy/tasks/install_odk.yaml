@@ -1,0 +1,26 @@
+# - name: Deploy ODK
+#   shell: |
+#     export SANDBOX_HOSTNAME={{domain}}
+#     cd /root/openg2p-deployment/kubernetes/odk-central
+#     ./install.sh
+
+- name: Copy Deploy folder
+  shell: cp -r /root/openg2p-deployment/kubernetes/ /root/openg2p/customization/
+
+
+- name: "Update odk config"
+  template:
+    src: "odk/install.j2"
+    dest: "/root/openg2p/customization/kubernetes/odk-central/install.sh"
+    mode: '0755'
+
+
+- name: Deploy ODK
+  shell: |
+    export SANDBOX_HOSTNAME={{domain}}
+    kubens default
+    cd /root/openg2p/customization/kubernetes/odk-central
+    ./install.sh
+
+- name: Wait for deployments in odk namespace
+  shell: bash /root/check_deployment.sh odk

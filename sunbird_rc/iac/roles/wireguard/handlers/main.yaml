@@ -1,0 +1,4 @@
+- name: Restart Wireguard
+  systemd:
+    name: "wireguard"
+    state: restarted

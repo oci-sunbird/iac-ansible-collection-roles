@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: longhorn
+spec:
+  gateways:
+    - istio-system/all-hosts
+  hosts:
+    - longhorn.{{domain}}
+  http:
+    - route:
+        - destination:
+            host: longhorn-frontend
+            port:
+              number: 80
+      headers:
+        request:
+          set:
+            x-forwarded-proto: https

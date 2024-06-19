@@ -1,0 +1,13 @@
+- hosts: bastion
+  become: true
+  environment:
+    KUBECONFIG: "/root/.kube/oke_obs_config"
+  roles:
+    - openg2p.iac.rancher_oke_deploy
+
+- hosts: bastion
+  become: true
+  environment:
+    KUBECONFIG: "/root/.kube/oke_k8s_config"
+  roles:
+    - openg2p.iac.rancher_oke_import_cluster

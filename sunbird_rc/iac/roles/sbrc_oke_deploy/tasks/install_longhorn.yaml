@@ -1,0 +1,28 @@
+- name: Install longhorn
+  kubernetes.core.helm:
+    name: longhorn
+    chart_ref: longhorn/longhorn
+    chart_version: 1.5.1
+    release_namespace: longhorn-system
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      persistence:
+        defaultClassReplicaCount: "{{ longhorn_default_replica_count |default('3') }}"
+      service:
+        ui:
+          type: ClusterIP
+
+- name: Wait for deployments in longhorn-system namespace
+  shell: bash /root/check_deployment.sh longhorn-system
+
+##### Disabling this as we need to figure out basic authenthication by using istio virtual service
+# https://longhorn.io/docs/1.6.1/deploy/accessing-the-ui/longhorn-ingress/
+
+# - name: "Update longhorn virtual service config"
+#   template:
+#     src: "longhorn/longhorn-virtual-service.yaml.j2"
+#     dest: "/root/sunbird-rc/customization/longhorn/longhorn-virtual-service.yaml"
+
+# - name: Create longhorn virtual service
+#   shell: kubectl -n longhorn-system apply -f /root/sunbird-rc/customization/longhorn/longhorn-virtual-service.yaml

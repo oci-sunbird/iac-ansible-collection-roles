@@ -1,0 +1,39 @@
+
+- name: Create rancher config directory
+  file:
+    path: "{{rancher_config_location}}"
+    state: directory
+    mode: '0755'
+
+- name: "Update rancher config"
+  template:
+    src: "rke2-server.conf.j2"
+    dest: "{{rancher_config_location}}/config.yaml"
+  # notify: Restart RKE2   
+
+- name: Install rke2
+  shell: curl -sfL https://get.rke2.io | sh -
+
+- name: Restart RKE2
+  systemd:
+    name: "rke2-server"
+    state: restarted
+
+- name: "set to auto restart"
+  systemd:
+    enabled: true
+    daemon_reload: true
+    name: "rke2-server"
+    state: started
+
+- name: set environment values
+  blockinfile:
+    path: /root/.bashrc
+    block: |
+      export PATH=$PATH:/var/lib/rancher/rke2/bin
+      export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
+      alias k=kubectl
+      alias kctx=kubectx
+      alias kns=kubens
+    state: present
+    create: true

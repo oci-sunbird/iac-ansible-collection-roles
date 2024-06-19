@@ -1,0 +1,62 @@
+- name: "Copy deployment check script"
+  copy:
+    src: "check_deployment.sh"
+    dest: "/root/check_deployment.sh"
+    mode: "0755"
+
+- name: Install dependencies
+  package:
+    name:
+      - jq
+      - unzip
+
+- name: "Install opentofu"
+  shell: |
+    wget -q https://github.com/opentofu/opentofu/releases/download/v{{opentofu_version}}/tofu_{{opentofu_version}}_linux_amd64.zip -O /tmp/tofu_{{opentofu_version}}_linux_amd64.zip
+    unzip -o /tmp/tofu_{{opentofu_version}}_linux_amd64.zip -d /usr/local/bin
+    rm /tmp/tofu_{{opentofu_version}}_linux_amd64.zip
+
+- name: Create project directories
+  file:
+    path: "{{item}}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - /root/rancher/terraform/bootstrap
+
+- name: Upload ssl cert private key
+  copy:
+    src: "{{ ansible_ssl_cert_private_key_file }}"
+    dest: "/root/.ssh/ssl_cert_private_key.key"
+    mode: "0600"
+
+- name: Upload ssl cert file
+  copy:
+    src: "{{ ansible_ssl_cert_file }}"
+    dest: "/root/.ssh/ssl_cert.pem"
+    mode: "0600"
+
+- name: Get ssl certificate content
+  slurp:
+    src: /root/.ssh/ssl_cert.pem
+  register: ssl_cert_content_encoded
+
+- name: Get ssl certificate key content
+  slurp:
+    src: /root/.ssh/ssl_cert_private_key.key
+  register: ssl_cert_key_content_encoded
+
+- name: Set ssl certificates variable
+  set_fact:
+    ssl_cert: "{{ssl_cert_content_encoded.content | b64decode}}"
+    ssl_cert_key: "{{ssl_cert_key_content_encoded.content | b64decode}}"
+
+- name: Remove ssl cert private key
+  ansible.builtin.file:
+    path: /root/.ssh/ssl_cert_private_key.key
+    state: absent
+
+- name: Remove ssl cert file
+  ansible.builtin.file:
+    path: /root/.ssh/ssl_cert.pem
+    state: absent

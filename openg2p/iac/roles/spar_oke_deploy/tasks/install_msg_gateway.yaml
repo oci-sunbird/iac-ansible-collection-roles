@@ -1,0 +1,8 @@
+- name: Copy msg gateway setup scripts
+  template:
+    src: msg_gw/install.j2
+    dest: "/root/mosip/msg_gateway/install.sh"
+    mode: '0755'
+
+- name: msg gateway setup
+  shell: bash /root/mosip/msg_gateway/install.sh

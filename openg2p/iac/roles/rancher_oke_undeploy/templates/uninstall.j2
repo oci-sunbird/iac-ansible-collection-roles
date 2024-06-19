@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Set the namespace variable
+NAMESPACE="$1"
+
+# List all deployed releases in the namespace and store them in a variable
+RELEASES=$(helm list -n $NAMESPACE --short)
+
+# Loop through each release and uninstall it
+for RELEASE in $RELEASES; do
+  helm uninstall $RELEASE -n $NAMESPACE
+done
+
+# Delete the namespace 
+# kubectl delete ns $NAMESPACE

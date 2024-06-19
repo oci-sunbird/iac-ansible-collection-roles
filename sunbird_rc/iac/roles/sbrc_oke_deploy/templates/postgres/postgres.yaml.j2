@@ -1,0 +1,43 @@
+apiVersion: v1
+data:
+  username: {{postgres_connectionInfo_username |b64encode}}
+  password: {{postgres_connectionInfo_password |b64encode}}
+kind: Secret
+metadata:
+  name: app-secret
+type: kubernetes.io/basic-auth
+---
+
+apiVersion: v1
+data:
+  username: cG9zdGdyZXM=
+  password: {{postgres_connectionInfo_password |b64encode}}
+kind: Secret
+metadata:
+  name: superuser-secret
+type: kubernetes.io/basic-auth
+---
+
+
+# Example of PostgreSQL cluster
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-cluster
+spec:
+  instances: {{postgres_replica}}
+  primaryUpdateStrategy: unsupervised
+  storage:
+    size: {{postgres_data_size}}
+    storageClass: {{postgres_storage_class}}
+  monitoring:
+    enablePodMonitor: true
+
+  superuserSecret:
+    name: superuser-secret
+  bootstrap:
+    initdb:
+      database: registry
+      owner: registry
+      secret:
+        name: app-secret

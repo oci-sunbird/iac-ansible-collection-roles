@@ -1,0 +1,4 @@
+# - include_tasks: install_kubernetes.yaml
+# - include_tasks: configure.yaml
+# - include_tasks: install_longhorn.yaml
+- include_tasks: install_keycloak.yaml

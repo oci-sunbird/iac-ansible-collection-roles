@@ -1,0 +1,11 @@
+- hosts: bastion
+  become: true
+  environment:
+    KUBECONFIG: "/root/.kube/oke_k8s_config"
+  roles:
+    - sunbird_rc.iac.bastion_common
+    - sunbird_rc.iac.docker
+    - sunbird_rc.iac.oke_common
+    - sunbird_rc.iac.sbrc_oke_deploy
+
+

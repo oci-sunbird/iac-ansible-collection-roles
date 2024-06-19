@@ -1,0 +1,27 @@
+# - name: Deploy Keycloak
+#   shell: |
+#     export SANDBOX_HOSTNAME={{domain}}
+#     export KEYCLOAK_ISTIO_ENABLED=true
+#     export KEYCLOAK_INIT_ENABLED=true
+#     cd /root/openg2p-deployment/kubernetes/keycloak
+#     ./install.sh
+
+- name: Copy Deploy folder
+  shell: cp -r /root/openg2p-deployment/kubernetes/ /root/openg2p/customization/
+
+- name: "Update keycloak helm values config"
+  template:
+    src: "keycloak/values.yaml.j2"
+    dest: "/root/openg2p/customization/kubernetes/keycloak/values.yaml"
+    mode: '0755'
+
+- name: Deploy Keycloak
+  shell: |
+    export SANDBOX_HOSTNAME={{domain}}
+    export KEYCLOAK_ISTIO_ENABLED=true
+    export KEYCLOAK_INIT_ENABLED=true
+    cd /root/openg2p/customization/kubernetes/keycloak
+    ./install.sh
+
+- name: Wait for deployments in keycloak namespace
+  shell: bash /root/check_deployment.sh keycloak

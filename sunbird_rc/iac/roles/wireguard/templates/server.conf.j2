@@ -1,0 +1,6 @@
+[Interface]
+Address = ${INTERFACE}.1
+ListenPort = ${SERVERPORT}
+PrivateKey = $(cat /config/server/privatekey-server)
+PostUp = /config/rules.sh
+PostDown = /postdown.rules.sh

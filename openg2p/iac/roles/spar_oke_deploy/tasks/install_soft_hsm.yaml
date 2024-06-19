@@ -1,0 +1,24 @@
+- name: Add a mosip helm repository
+  kubernetes.core.helm_repository:
+    name: mosip
+    repo_url: https://mosip.github.io/mosip-helm
+
+- name: Create global config directory
+  file:
+    path: "/root/mosip/soft_hsm"
+    state: directory
+    mode: '0755'
+
+- name: Copy deployment check script
+  copy:
+    src: "soft-hsm/{{ item }}"
+    dest: "/root/mosip/soft_hsm/{{ item }}"
+    mode: '0755'
+  with_items:
+    - values.yaml
+    - install.sh
+
+- name: Install soft hsm
+  shell: |
+    cd /root/mosip/soft_hsm/
+    ./install.sh

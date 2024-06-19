@@ -1,0 +1,9 @@
+- name: Deploy Postgres
+  shell: |
+    export POSTGRES_ISTIO_ENABLED=true
+    export POSTGRES_INIT_ENABLED=true
+    cd /root/openg2p-deployment/kubernetes/postgresql
+    ./install.sh
+
+- name: Wait for deployments in postgres namespace
+  shell: bash /root/check_deployment.sh postgres

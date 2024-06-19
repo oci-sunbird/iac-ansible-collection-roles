@@ -1,0 +1,2 @@
+base_domain: all
+zone_compartment_id: "{{compartment_id}}"

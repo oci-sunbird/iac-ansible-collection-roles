@@ -1,0 +1,74 @@
+- name: Create istio config directory
+  file:
+    path: "/root/kubernetes/istio"
+    state: directory
+    mode: '0755'
+
+- name: "Update istio operator config"
+  template:
+    src: "istio-operator-external-lb.j2"
+    dest: "/root/kubernetes/istio/istio-operator-external-lb.yaml"
+
+- name: Install istio operator
+  shell: |
+    export PATH=/root/istio-1.21.0/bin:$PATH
+    istioctl install -y -f /root/kubernetes/istio/istio-operator-external-lb.yaml
+
+# - name: Install istio ingress gateway
+#   shell: kubectl apply -f /root/kubernetes/istio/istio-operator-external-lb.yaml
+
+- name: Upload ssl cert private key
+  copy:
+    src: "{{ ansible_ssl_cert_private_key_file }}"
+    dest: "/root/.ssh/ssl_cert_private_key.key"
+    mode: "0600"
+
+- name: Upload ssl cert file
+  copy:
+    src: "{{ ansible_ssl_cert_file }}"
+    dest: "/root/.ssh/ssl_cert.pem"
+    mode: "0600"
+
+- name: Create ssl secret for istio gateway
+  shell: |
+    kubectl -n istio-system delete secret tls-openg2p-ingress
+    kubectl create secret tls tls-openg2p-ingress -n istio-system \
+    --cert=/root/.ssh/ssl_cert.pem \
+    --key=/root/.ssh/ssl_cert_private_key.key
+
+- name: Remove ssl cert private key
+  ansible.builtin.file:
+    path: /root/.ssh/ssl_cert_private_key.key
+    state: absent
+
+- name: Remove ssl cert file
+  ansible.builtin.file:
+    path: /root/.ssh/ssl_cert.pem
+    state: absent
+
+- name: "Update istio gateway config"
+  template:
+    src: "gateway.j2"
+    dest: "/root/kubernetes/istio/gateway.yaml"
+
+- name: Create istio gateway for all hosts
+  shell: kubectl apply -f /root/kubernetes/istio/gateway.yaml
+
+- name: Wait for deployments in istio-system namespace
+  shell: bash /root/check_deployment.sh istio-system
+
+# - name: "Update clusterissuer config"
+#   template:
+#     src: "cluster_issuer.j2"
+#     dest: "/root/kubernetes/istio/cluster_issuer.yaml"
+
+# - name: Install Cluster Issuer
+#   shell: kubectl apply -f /root/kubernetes/istio/cluster_issuer.yaml
+
+# - name: "Update certificate config"
+#   template:
+#     src: "certificate.j2"
+#     dest: "/root/kubernetes/istio/certificate.yaml"
+
+# - name: Install Certificate
+#   shell: kubectl apply -f /root/kubernetes/istio/certificate.yaml

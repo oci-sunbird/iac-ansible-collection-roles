@@ -1,0 +1,31 @@
+# - name: Deploy SPAR
+#   shell: |
+#     export SANDBOX_HOSTNAME={{domain}}
+#     cd /root/openg2p-deployment/kubernetes/social-payments-account-registry
+#     ./install.sh
+
+
+- name: Copy Deploy folder
+  shell: cp -r /root/openg2p-deployment/kubernetes/ /root/openg2p/customization/
+
+
+- name: "Update spar config"
+  template:
+    src: "spar/install.j2"
+    dest: "/root/openg2p/customization/kubernetes/social-payments-account-registry/install.sh"
+    mode: '0755'
+
+- name: "Update spar helm values config"
+  template:
+    src: "spar/values.yaml.j2"
+    dest: "/root/openg2p/customization/kubernetes/social-payments-account-registry/values.yaml"
+    mode: '0755'
+
+- name: Deploy SPAR
+  shell: |
+    export SANDBOX_HOSTNAME={{domain}}
+    cd /root/openg2p/customization/kubernetes/social-payments-account-registry
+    ./install.sh
+
+- name: Wait for deployments in spar namespace
+  shell: bash /root/check_deployment.sh spar

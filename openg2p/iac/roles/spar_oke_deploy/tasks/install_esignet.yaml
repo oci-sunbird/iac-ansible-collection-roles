@@ -1,0 +1,8 @@
+- name: Deploy Esignet
+  shell: |
+    export SANDBOX_HOSTNAME={{domain}}
+    cd /root/openg2p-deployment/kubernetes/esignet
+    ./install.sh
+
+- name: Wait for deployments in esignet namespace
+  shell: bash /root/check_deployment.sh esignet

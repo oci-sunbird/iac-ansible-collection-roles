@@ -1,0 +1,13 @@
+- name: Install reloader
+  kubernetes.core.helm:
+    name: reloader
+    chart_ref: stakater/reloader
+    release_namespace: sunbird-rc
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      reloader:
+        watchGlobally: false
+
+- name: Wait for deployments in sunbird-rc namespace
+  shell: bash /root/check_deployment.sh sunbird-rc

@@ -1,0 +1,41 @@
+- name: Upload ssh key
+  copy:
+    src: "{{ ansible_ssh_private_key_file }}"
+    dest: "/root/.ssh/{{ base_domain }}.key"
+    mode: "0600"
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install dependencies
+  package:
+    name:
+      - python3
+      - curl
+
+- name: Install kubectl
+  shell: |
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+- name: Install helm
+  shell: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+- name: Install kubectx
+  shell: |
+    wget -q https://github.com/ahmetb/kubectx/releases/download/v0.9.5/kubectx -O /usr/local/bin/kubectx
+    chmod +x /usr/local/bin/kubectx
+
+- name: Install kubens
+  shell: |
+    wget -q https://github.com/ahmetb/kubectx/releases/download/v0.9.5/kubens -O /usr/local/bin/kubens
+    chmod +x /usr/local/bin/kubens
+
+- name: Install k9s
+  ansible.builtin.unarchive:
+    src: https://github.com/derailed/k9s/releases/download/v0.32.4/k9s_Linux_amd64.tar.gz
+    dest: /usr/local/bin/
+    include: 
+      - "k9s"
+    remote_src: yes

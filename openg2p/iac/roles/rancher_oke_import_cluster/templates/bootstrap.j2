@@ -1,0 +1,25 @@
+variable "server_url" {}
+variable "admin_password" {}
+
+provider "rancher2" {
+  alias = "bootstrap"
+  api_url   = var.server_url
+  bootstrap = true
+}
+
+resource "rancher2_bootstrap" "admin" {
+  provider         = rancher2.bootstrap
+  initial_password = var.admin_password
+  password         = var.admin_password
+  telemetry        = true
+}
+
+
+output "url" {
+  value     = rancher2_bootstrap.admin.url
+}
+
+output "token" {
+  sensitive = true
+  value     = rancher2_bootstrap.admin.token
+}

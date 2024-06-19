@@ -1,0 +1,33 @@
+- name: "Copy deployment check script"
+  copy:
+    src: "check_deployment.sh"
+    dest: "/root/check_deployment.sh"
+    mode: "0755"
+
+- name: Add a mosip helm repository
+  kubernetes.core.helm_repository:
+    name: mosip
+    repo_url: https://mosip.github.io/mosip-helm
+
+- name: Create config server directory
+  file:
+    path: "/root/mosip/config-server"
+    state: directory
+    mode: '0755'
+
+- name: Copy deployment check script
+  copy:
+    src: "config-server/{{ item }}"
+    dest: "/root/mosip/config-server/{{ item }}"
+    mode: '0755'
+  with_items:
+    - values.yaml
+    - copy_cm_func.sh
+    - copy_cm.sh
+    - copy_secrets.sh
+    - install.sh
+
+- name: Install config server
+  shell: |
+    cd /root/mosip/config-server/
+    ./install.sh

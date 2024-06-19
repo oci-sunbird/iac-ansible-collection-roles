@@ -1,0 +1,4 @@
+- hosts: bastion
+  become: true
+  roles:
+    - sunbird_rc.iac.oci_cleanup

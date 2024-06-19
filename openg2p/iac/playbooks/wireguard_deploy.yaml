@@ -1,0 +1,7 @@
+- hosts: bastion
+  become: true
+  roles:
+    - openg2p.iac.bastion_common
+    - openg2p.iac.docker
+    - openg2p.iac.wireguard
+    - openg2p.iac.oke_common

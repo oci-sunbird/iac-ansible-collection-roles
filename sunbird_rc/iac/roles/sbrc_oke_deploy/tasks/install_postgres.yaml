@@ -1,0 +1,74 @@
+- name: Install Postgres
+  kubernetes.core.helm:
+    name: cnpg
+    chart_ref: cnpg/cloudnative-pg
+    chart_version: 0.19.0
+    release_namespace: cnpg-system
+    create_namespace: true
+    update_repo_cache: true
+  when: not create_registry_db | bool
+
+- name: Wait for deployments in cnpg-system namespace
+  shell: bash /root/check_deployment.sh cnpg-system
+  when: not create_registry_db | bool
+
+- name: "Update postgres db config"
+  template:
+    src: "postgres/postgres.yaml.j2"
+    dest: "/root/sunbird-rc/customization/postgres/postgres.yaml"
+  when: not create_registry_db | bool
+
+- name: Create postres db
+  shell: |
+    kubectl -n sunbird-rc apply -f /root/sunbird-rc/customization/postgres/postgres.yaml
+  when: not create_registry_db | bool
+
+
+- name: Create registry database
+  community.postgresql.postgresql_db:
+    name: registry
+    comment: Sunbird RC Database
+    login_host: "{{postgress_db_host}}"
+    login_user: "{{postgres_admin_user}}"
+    login_password: "{{postgres_connectionInfo_password}}"
+    state: present
+  when: create_registry_db | bool
+
+- name: Create registry user.
+  community.postgresql.postgresql_user:
+    name: "registry"
+    password: "{{postgres_connectionInfo_password}}"
+    login_db: "postgres"
+    login_host: "{{postgress_db_host}}"
+    login_user: "{{postgres_admin_user}}"
+    login_password: "{{postgres_connectionInfo_password}}"
+    expires: infinity
+    state: present
+  when: create_registry_db | bool
+
+- name: Grant privs to user registry on database registry
+  community.postgresql.postgresql_privs:
+    database: registry
+    login_host: "{{postgress_db_host}}"
+    login_user: "{{postgres_admin_user}}"
+    login_password: "{{postgres_connectionInfo_password}}"
+    state: present
+    privs: ALL
+    type: database
+    roles: registry
+    grant_option: true
+    state: present
+  when: create_registry_db | bool
+
+
+
+# - name: Connect to registry database, create registry user, and grant access to database and products table
+#   community.postgresql.postgresql_user:
+#     db: registry
+#     name: registry
+#     password: "{{postgres_connectionInfo_password}}"
+#     login_host: "{{postgress_db_host}}"
+#     login_user: "{{postgres_admin_user}}"
+#     login_password: "{{postgres_connectionInfo_password}}"
+#     expires: "infinity"
+#   when: create_registry_db 

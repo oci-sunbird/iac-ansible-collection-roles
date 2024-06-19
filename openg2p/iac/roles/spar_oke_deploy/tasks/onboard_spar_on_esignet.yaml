@@ -1,0 +1,57 @@
+- name: "Upload make jwk script"
+  template:
+    src: "esignet/mkjwk.py.j2"
+    dest: "/root/openg2p/customization/esignet/mkjwk.py"
+    mode: '0755'
+
+- name: Check if oidc client creationg is already done
+  stat:
+    path: /root/openg2p/customization/esignet/create_oidc_client.done
+  register: create_oidc_client_file
+
+- name: Execute mkjwk script
+  shell: |
+    #!/bin/bash
+    cd /root/openg2p/customization/esignet/
+    python3 mkjwk.py
+    if [ $? -eq 0 ]; then
+      echo "OIDC client creation completed successfully" > /root/openg2p/customization/esignet/create_oidc_client.done
+    fi
+  register: create_oidc_client
+  when: not create_oidc_client_file.stat.exists
+
+
+- name: Get jwk private key
+  slurp:
+    src: /root/openg2p/customization/esignet/private_key.json
+  register: jwk_private_key_encoded
+
+- name: Set client_assertion_jwk private key
+  set_fact:
+    client_assertion_jwk: "{{jwk_private_key_encoded.content | b64decode}}"
+
+
+- name: "Update spar update query"
+  template:
+    src: "spar/update_table.sql.j2"
+    dest: "/root/openg2p/customization/kubernetes/social-payments-account-registry/update_table.sql"
+    mode: '0755'
+
+- name: Get postgres spar user password
+  shell: |
+    sparuser_password=`kubectl get secret --namespace postgres postgres-postgresql  -o go-template='{{ '{{' }}index .data "password"|base64decode{{ '}}' }}'`
+    echo $sparuser_password
+  register: sparuser_password
+
+- name: Update spar login provider
+  shell: |
+    cd /root/openg2p/customization/kubernetes/social-payments-account-registry/
+    kubectl -n postgres exec -i postgres-postgresql-0 -- bash -c 'export PGPASSWORD={{sparuser_password.stdout}} ; psql -U sparuser -d spardb -f -' < update_table.sql
+
+# - name: Dump result
+#   debug: 
+#     msg: '{{client_assertion_jwk}}'
+
+# - name: Dump result with double quotes
+#   debug: 
+#     msg: "{{client_assertion_jwk | regex_replace(\"'\", '\"') }}"

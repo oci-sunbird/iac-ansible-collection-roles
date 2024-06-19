@@ -1,0 +1,14 @@
+- name: Install certificatesign
+  kubernetes.core.helm:
+    name: certificatesign
+    chart_ref: daas/certificatesign
+    release_namespace: sunbird-rc
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      certificatesignenv:
+        CERTIFICATE_PUBLIC_KEY: "{{sbrc_certificate_public_key}}"
+        CERTIFICATE_PRIVATE_KEY: "{{sbrc_certificate_private_key}}"
+
+- name: Wait for deployments in sunbird-rc namespace
+  shell: bash /root/check_deployment.sh sunbird-rc

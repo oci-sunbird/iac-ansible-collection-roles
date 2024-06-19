@@ -1,0 +1,75 @@
+- name: Create cleanup directory
+  file:
+    path: "/root/sunbird-rc/cleanup"
+    state: directory
+    mode: '0755'
+
+- name: Copy cleanup script
+  template:
+    src: uninstall.j2
+    dest: "/root/sunbird-rc/cleanup/uninstall.sh"
+    mode: '0755'
+
+- name: Delete k8s objects for certmanager
+  kubernetes.core.k8s:
+    state: absent
+    src: /root/sunbird-rc/customization/cert-manager/{{item}}
+  with_items:
+    - oci-webhook-profile.yaml
+    - clusterissuer.yaml
+    - certificate.yaml
+
+
+- name: Uninstall longhorn
+  shell: |
+    kubectl -n longhorn-system patch -p '{"value": "true"}' --type=merge lhs deleting-confirmation-flag
+  ignore_errors: true
+
+- name: Uninstall postgres
+  shell: |
+    kubectl -n sunbird-rc delete cluster.postgresql.cnpg.io/postgres-cluster
+  ignore_errors: true
+  when: not create_registry_db | bool
+
+- name: Clean up vault
+  file:
+    path: /root/sunbird-rc/customization/vault/vault_init.done
+    state: absent
+
+- name: Uninstall applications
+  shell: /root/sunbird-rc/cleanup/uninstall.sh {{item}}
+  with_items:
+    - sunbird-rc
+    - cnpg-system
+    - vault   
+    - longhorn-system
+    - cert-manager
+  ignore_errors: true
+
+
+- name: Remove zone records
+  oracle.oci.oci_dns_rrset:
+    zone_name_or_id: "{{domain}}"
+    domain: "{{item}}.{{domain}}"
+    rtype: "A"
+    state: absent
+  with_items:
+    - sbrc
+    - sbrciam
+    - sbrcfs
+
+- name: Uninstall istio service mesh
+  shell: |
+    export PATH=/root/istio-1.21.0/bin:$PATH
+    istioctl uninstall -y --purge
+    #kubectl delete ns istio-system
+
+- name: Delete registry database
+  community.postgresql.postgresql_db:
+    name: registry
+    comment: Sunbird RC Database
+    login_host: "{{postgress_db_host}}"
+    login_user: "{{postgres_admin_user}}"
+    login_password: "{{postgres_connectionInfo_password}}"
+    state: absent
+  when: create_registry_db | bool

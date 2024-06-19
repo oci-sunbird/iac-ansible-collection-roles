@@ -1,0 +1,33 @@
+# - name: Deploy Keymanager
+#   shell: |
+#     export SANDBOX_HOSTNAME={{domain}}
+#     kubens default
+#     cd /root/openg2p-deployment/kubernetes/keymanager
+#     ./install.sh
+
+- name: Copy Deploy folder
+  shell: cp -r /root/openg2p-deployment/kubernetes/ /root/openg2p/customization/
+
+
+- name: "Update keymanager config"
+  template:
+    src: "keymanager/install.j2"
+    dest: "/root/openg2p/customization/kubernetes/keymanager/install.sh"
+    mode: '0755'
+
+- name: "Update keymanager global config map"
+  template:
+    src: "keymanager/global-conf-map.yaml.j2"
+    dest: "/root/openg2p/customization/kubernetes/keymanager/global-conf-map.yaml"
+    mode: '0755'
+
+- name: Deploy Keymanager
+  shell: |
+    export SANDBOX_HOSTNAME={{domain}}
+    export KEYMANAGER_HOSTNAME=keymanager.{{domain}}
+    kubens default
+    cd /root/openg2p/customization/kubernetes/keymanager/
+    ./install.sh
+
+# - name: Wait for deployments in keymanager namespace
+#   shell: bash /root/check_deployment.sh keymanager

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: oci-profile
+  namespace: cert-manager
+type: Opaque
+stringData:
+  tenancy: "{{tenancy_id}}"
+  user: "{{bastion_user_id}}"
+  region: "{{region}}"
+  fingerprint: "{{fingerprint}}"
+  privateKey: |-
+    {{bastion_user_api_key | indent(4)}}
+  privateKeyPassphrase: ""
+

@@ -1,0 +1,51 @@
+- name: Install Vault
+  kubernetes.core.helm:
+    name: vault
+    chart_ref: hashicorp/vault
+    release_namespace: vault
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      server:
+        ha:
+          enabled: false
+
+
+- name: "Upload vault init script"
+  copy:
+    src: "init_vault.sh"
+    dest: "/root/sunbird-rc/customization/vault/init_vault.sh"
+    mode: "0700"
+
+- name: Check if vault init is already done
+  stat:
+    path: /root/sunbird-rc/customization/vault/vault_init.done
+  register: vault_init_file
+
+- name: Unseal vault
+  shell: |
+    cd /root/sunbird-rc/customization/vault/
+    /root/sunbird-rc/customization/vault/init_vault.sh
+  when: not vault_init_file.stat.exists
+
+- name: Check if vault secret file exists
+  stat:
+    path: /root/sunbird-rc/customization/vault/vault_secrets.yaml
+  register: vault_secrets_file
+
+- name: Fetch file from remote server
+  fetch:
+    src: /root/sunbird-rc/customization/vault/vault_secrets.yaml
+    dest: "{{ inventory_dir }}/"
+    flat: yes
+  when: vault_secrets_file.stat.exists
+
+- name: Delete vault secret file
+  file:
+    path: /root/sunbird-rc/customization/vault/vault_secrets.yaml
+    state: absent
+
+- name: Delete vault cluster key json file
+  file:
+    path: /root/sunbird-rc/customization/vault/cluster-keys.json
+    state: absent

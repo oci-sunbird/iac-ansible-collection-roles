@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: keycloak
+spec:
+  gateways:
+    - istio-system/all-hosts
+  hosts:
+    - sbrciam.{{domain}}
+  http:
+    - route:
+        - destination:
+            host: keycloak
+            port:
+              number: 8080
+      headers:
+        request:
+          set:
+            x-forwarded-proto: https

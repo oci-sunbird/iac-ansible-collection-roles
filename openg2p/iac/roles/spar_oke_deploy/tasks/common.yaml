@@ -1,0 +1,45 @@
+- name: "Copy deployment check script"
+  copy:
+    src: "check_deployment.sh"
+    dest: "/root/check_deployment.sh"
+    mode: "0755"
+
+- name: Install pip pre requisites
+  pip:
+    name: 
+      - kubernetes
+      - jwcrypto
+
+- name: Clone OpenG2P Deployment Repo
+  ansible.builtin.git:
+    repo: https://github.com/oci-sunbird/openg2p-deployment.git
+    dest: /root/openg2p-deployment
+    single_branch: yes
+    version: v1.1.1
+
+- name: Clone MOSIP infra Deployment Repo
+  ansible.builtin.git:
+    repo: https://github.com/mosip/mosip-infra.git
+    dest: /root/mosip-infra
+    single_branch: yes
+    version: "{{mosip_rel_version}}"
+
+- name: Add a mosip helm repository
+  kubernetes.core.helm_repository:
+    name: mosip
+    repo_url: https://mosip.github.io/mosip-helm
+
+- name: Create project directories
+  file:
+    path: "{{item}}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - /root/openg2p/customization
+    - /root/openg2p/customization/grafana
+    - /root/openg2p/customization/esignet
+    - /root/mosip/activemq
+    - /root/mosip/msg_gateway
+    - /root/mosip/captcha
+
+

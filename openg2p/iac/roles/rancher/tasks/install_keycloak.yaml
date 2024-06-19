@@ -1,0 +1,56 @@
+- name: "Copy deployment check script"
+  copy:
+    src: "check_deployment.sh"
+    dest: "/root/check_deployment.sh"
+    mode: "0755"
+
+- name: Get deployments in kube-system namespace
+  shell: bash /root/check_deployment.sh kube-system 
+
+
+- name: Add a keycloak helm repository
+  kubernetes.core.helm_repository:
+    name: bitnami
+    repo_url: https://charts.bitnami.com/bitnami
+
+- name: Install keycloak
+  kubernetes.core.helm:
+    name: keycloak
+    chart_ref: bitnami/keycloak
+    chart_version: 19.3.4
+    release_namespace: keycloak
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      service:
+        type: ClusterIP
+      auth:
+        adminUser: admin
+      ingress:
+        hostname: "{{keycloak_hostname}}"
+        enabled: true
+        # extraTls:
+        # - hosts:
+        #   - "{{keycloak_hostname}}"
+        #   secretName: tls-keycloak-ingress
+      replicaCount: 2
+      proxy: edge
+      resources:
+        limits: {}
+        requests:
+          cpu: 200m
+          memory: 1000Mi
+      rbac:
+        create: true
+        rules:
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          verbs:
+          - get
+          - list
+
+- name: Get deployments in keycloak namespace
+  shell: bash /root/check_deployment.sh keycloak
+

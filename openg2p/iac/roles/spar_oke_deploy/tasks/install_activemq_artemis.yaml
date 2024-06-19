@@ -1,0 +1,19 @@
+- name: Copy deployment  script
+  template:
+    src: "activemq/{{ item }}.j2"
+    dest: "/root/mosip/activemq/{{ item }}.sh"
+    mode: '0755'
+  with_items:
+    - install
+
+- name: Copy deployment  script
+  template:
+    src: "activemq/values.j2"
+    dest: "/root/mosip/activemq/values.yaml"
+    mode: '0755'
+
+
+- name: Install activemq
+  shell: |
+    cd /root/mosip/activemq/
+    ./install.sh

@@ -1,0 +1,8 @@
+- name: Copy captcha setup scripts
+  template:
+    src: captcha/install.j2
+    dest: "/root/mosip/captcha/install.sh"
+    mode: '0755'
+
+- name: captcha setup
+  shell: bash /root/mosip/captcha/install.sh

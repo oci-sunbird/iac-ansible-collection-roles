@@ -1,0 +1,30 @@
+Sunbird-RC
+---------- 
+
+Sunbird-RC api url: https://sbrc.{{domain}}
+
+Sunbird-RC api health check url: curl -k https://sbrc.{{domain}}/health
+
+Sunbird-RC keycloak url: https://sbrciam.{{domain}}
+
+Keycloak Admin console credentials: admin/{{sbrc_keycloak_admin_password}}
+
+Keycloadk admin api secret: {{sbrc_keycloak_admin_api_secret}}
+
+Minio admin console: https://sbrcfs.{{domain}}
+
+Minio Admin console credentials: admin/{{filestorage_root_password}}
+
+Postgres Details:
+admin user: {{postgres_admin_user}}
+password: {{postgres_connectionInfo_password}}
+host: {{postgress_db_host}}
+
+
+Bastion Details:
+
+bastion user: ubuntu
+bastion public ip: {{bastion_public_ip}}
+bastion private key:
+
+{{bastion_ssh_key}}

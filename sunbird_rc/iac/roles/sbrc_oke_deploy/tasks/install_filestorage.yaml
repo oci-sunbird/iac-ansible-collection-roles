@@ -1,0 +1,25 @@
+- name: Install filestorage
+  kubernetes.core.helm:
+    name: filestorage
+    chart_ref: daas/filestorage
+    release_namespace: sunbird-rc
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      filestorageenv:
+        MINIO_ROOT_PASSWORD: "{{filestorage_root_password}}"
+        
+      storage_size: "{{filestorage_storage_size}}"
+      storage_class_name: "{{filestorage_storage_class}}"
+
+- name: Wait for deployments in sunbird-rc namespace
+  shell: bash /root/check_deployment.sh sunbird-rc
+
+
+- name: "Update filestorage virtual service config"
+  template:
+    src: "filestorage/filestorage-virtual-service.yaml.j2"
+    dest: "/root/sunbird-rc/customization/filestorage/filestorage-virtual-service.yaml"
+
+- name: Create filestorage virtual service
+  shell: kubectl -n sunbird-rc apply -f /root/sunbird-rc/customization/filestorage/filestorage-virtual-service.yaml

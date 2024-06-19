@@ -1,0 +1,83 @@
+- name: Create cleanup directory
+  file:
+    path: "/root/openg2p/cleanup"
+    state: directory
+    mode: '0755'
+
+- name: Copy cleanup script
+  template:
+    src: uninstall.j2
+    dest: "/root/openg2p/cleanup/uninstall.sh"
+    mode: '0755'
+
+# - name: Uninstall longhorn
+#   shell: |
+#     kubectl -n longhorn-system patch -p '{"value": "true"}' --type=merge lhs deleting-confirmation-flag
+#   ignore_errors: true
+
+- name: Uninstall applications
+  shell: /root/openg2p/cleanup/uninstall.sh {{item}}
+  with_items:
+    - spar
+    - esignet
+    - keymanager
+    - activemq
+    - cattle-logging-system
+    - kafka
+    - odk
+    - captcha
+    - msg-gateways
+    - minio
+    - keycloak
+    - postgres
+    - monitoring
+    - artifactory
+    - softhsm
+    - config-server
+    - conf-secrets
+  ignore_errors: true
+
+- name: Uninstall istio service mesh
+  shell: |
+    export PATH=/root/istio-1.21.0/bin:$PATH
+    istioctl uninstall -y --purge
+    kubectl patch ns istio-system -p '{"metadata":{"finalizers":null}}'
+    kubectl delete ns istio-system
+
+
+- name: Remove zone records
+  oracle.oci.oci_dns_rrset:
+    zone_name_or_id: "{{domain}}"
+    domain: "{{item}}.{{domain}}"
+    rtype: "A"
+    state: absent
+  with_items:
+    - api
+    - prereg
+    - resident
+    - esignet
+    - spar
+    - grafana
+    - keycloak
+    - opensearch
+    - postgres
+    - api-internal
+    - activemq
+    - kibana
+    - regclient
+    - admin
+    - minio
+    - kafka
+    - pmp
+    - smtp
+    - compliance
+    - odk
+    - keymanager
+
+- name: Remove progres files
+  file:
+    path: "{{item}}"
+    state: absent
+  with_items:
+    - /root/openg2p/customization/esignet/data_load.done
+    - /root/openg2p/customization/esignet/create_oidc_client.done

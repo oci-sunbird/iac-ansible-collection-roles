@@ -1,0 +1,26 @@
+- name: Install registry
+  kubernetes.core.helm:
+    name: registry
+    chart_ref: daas/registry
+    release_namespace: sunbird-rc
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      rccoreenv:
+        connectionInfo_uri: "{{registry_db_url}}"
+        connectionInfo_username: "{{postgres_connectionInfo_username}}"
+        connectionInfo_password: "{{postgres_connectionInfo_password}}"
+        sunbird_sso_admin_client_secret: "{{sbrc_keycloak_admin_api_secret}}"
+        filestorage_secret_key: "{{filestorage_root_password}}"
+
+- name: Wait for deployments in sunbird-rc namespace
+  shell: bash /root/check_deployment.sh sunbird-rc
+
+
+- name: "Update registry virtual service config"
+  template:
+    src: "registry/registry-virtual-service.yaml.j2"
+    dest: "/root/sunbird-rc/customization/registry/registry-virtual-service.yaml"
+
+- name: Create registry virtual service
+  shell: kubectl -n sunbird-rc apply -f /root/sunbird-rc/customization/registry/registry-virtual-service.yaml

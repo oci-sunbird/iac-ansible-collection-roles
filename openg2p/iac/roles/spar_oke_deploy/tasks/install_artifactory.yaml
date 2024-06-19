@@ -1,0 +1,23 @@
+- name: Add a mosip helm repository
+  kubernetes.core.helm_repository:
+    name: mosip
+    repo_url: https://mosip.github.io/mosip-helm
+
+- name: Create global config directory
+  file:
+    path: "/root/mosip/artifactory"
+    state: directory
+    mode: '0755'
+
+- name: Copy deployment check script
+  copy:
+    src: "artifactory/{{ item }}"
+    dest: "/root/mosip/artifactory/{{ item }}"
+    mode: '0755'
+  with_items:
+    - install.sh
+
+- name: Install artifactory
+  shell: |
+    cd /root/mosip/artifactory/
+    ./install.sh

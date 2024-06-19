@@ -1,0 +1,31 @@
+- name: Install keycloak
+  kubernetes.core.helm:
+    name: keycloak
+    chart_ref: daas/keycloak
+    release_namespace: sunbird-rc
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      keycloakenv:
+        DB_PASSWORD: "{{postgres_connectionInfo_password}}"
+        KEYCLOAK_PASSWORD: "{{sbrc_keycloak_admin_password}}"
+        DB_ADDR: "{{postgress_db_host}}"
+        DB_PORT: '5432'
+        DB_USER: "{{postgres_connectionInfo_username}}"
+        PROXY_ADDRESS_FORWARDING: 'true'
+        KC_PROXY: edge
+        KEYCLOAK_IMPORT: /opt/jboss/keycloak/imports/realm-export.json
+        DOMAIN_NAME: "sbrc.iam.{{domain}}"
+        ADMIN_API_SECRET: "{{sbrc_keycloak_admin_api_secret}}"
+
+- name: Wait for deployments in sunbird-rc namespace
+  shell: bash /root/check_deployment.sh sunbird-rc
+
+
+- name: "Update keycloak virtual service config"
+  template:
+    src: "keycloak/keycloak-virtual-service.yaml.j2"
+    dest: "/root/sunbird-rc/customization/keycloak/keycloak-virtual-service.yaml"
+
+- name: Create keycloak virtual service
+  shell: kubectl -n sunbird-rc apply -f /root/sunbird-rc/customization/keycloak/keycloak-virtual-service.yaml

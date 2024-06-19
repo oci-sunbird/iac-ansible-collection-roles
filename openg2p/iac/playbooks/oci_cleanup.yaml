@@ -1,0 +1,4 @@
+- hosts: bastion
+  become: true
+  roles:
+    - openg2p.iac.oci_cleanup

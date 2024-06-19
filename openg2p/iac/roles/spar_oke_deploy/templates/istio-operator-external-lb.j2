@@ -1,0 +1,44 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+  name: primary
+spec:
+  profile: default
+  meshConfig:
+    accessLogFile: /dev/stdout
+    enableTracing: true
+    pathNormalization:
+      normalization: MERGE_SLASHES
+    defaultConfig:
+      proxyMetadata:
+        ISTIO_META_IDLE_TIMEOUT: 0s
+      holdApplicationUntilProxyStarts: true
+  components:
+    ingressGateways:
+    - name: istio-ingressgateway
+      enabled: true
+      k8s:
+        hpaSpec:
+          minReplicas: 3
+        serviceAnnotations:
+          oci.oraclecloud.com/load-balancer-type: "nlb"
+          oci-network-load-balancer.oraclecloud.com/internal: "false"
+          oci-network-load-balancer.oraclecloud.com/is-preserve-source: "false"
+          oci-network-load-balancer.oraclecloud.com/oci-network-security-groups: "{{nsg_lb_oke_k8s_cluster}}"            
+        service:
+          type: LoadBalancer
+          externalTrafficPolicy: Local
+          ports:
+          - name: tcp-status-port
+            port: 15021
+            targetPort: 15021
+          - name: http
+            port: 80
+            targetPort: 8080
+          - name: tcp-postgres
+            port: 5432
+            targetPort: 5432
+          - name: https
+            port: 443
+            targetPort: 8081

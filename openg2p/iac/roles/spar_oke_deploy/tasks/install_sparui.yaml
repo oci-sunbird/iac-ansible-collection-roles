@@ -1,0 +1,7 @@
+- name: Deploy SPAR UI from url
+  kubernetes.core.helm:
+    name: spar_ui
+    chart_ref: "https://github.com/OpenG2P/openg2p-helm/blob/gh-pages/spar-self-service-ui-0.1.0.tgz"
+    release_namespace: spar
+    create_namespace: true
+    values:

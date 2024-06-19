@@ -1,0 +1,63 @@
+- name: Upload ssl cert private key
+  copy:
+    src: "{{ ansible_ssl_cert_private_key_file }}"
+    dest: "/root/.ssh/ssl_cert_private_key.key"
+    mode: "0600"
+
+- name: Upload ssl cert file
+  copy:
+    src: "{{ ansible_ssl_cert_file }}"
+    dest: "/root/.ssh/ssl_cert.pem"
+    mode: "0600"
+
+- name: Get ssl certificate content
+  slurp:
+    src: /root/.ssh/ssl_cert.pem
+  register: ssl_cert_content_encoded
+
+- name: Get ssl certificate key content
+  slurp:
+    src: /root/.ssh/ssl_cert_private_key.key
+  register: ssl_cert_key_content_encoded
+
+- name: Set ssl certificates variable
+  set_fact:
+    ssl_cert: "{{ssl_cert_content_encoded.content | b64decode}}"
+    ssl_cert_key: "{{ssl_cert_key_content_encoded.content | b64decode}}"
+
+- name: Add a keycloak helm repository
+  kubernetes.core.helm_repository:
+    name: bitnami
+    repo_url: https://charts.bitnami.com/bitnami
+
+- name: Install keycloak
+  kubernetes.core.helm:
+    name: keycloak
+    chart_ref: bitnami/keycloak
+    chart_version: 20.0.0
+    release_namespace: keycloak
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      proxy: edge
+      production: true
+      containerSecurityContext:
+        readOnlyRootFilesystem: false
+      ingress:
+        enabled: true
+        ingressClassName: "nginx"
+        tls: true
+        hostname: "keycloak-rancher.{{domain}}"
+
+- name: Remove ssl cert private key
+  ansible.builtin.file:
+    path: /root/.ssh/ssl_cert_private_key.key
+    state: absent
+
+- name: Remove ssl cert file
+  ansible.builtin.file:
+    path: /root/.ssh/ssl_cert.pem
+    state: absent
+
+- name: Wait for deployments in keycloak namespace
+  shell: bash /root/check_deployment.sh keycloak

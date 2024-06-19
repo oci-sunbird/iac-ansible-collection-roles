@@ -1,0 +1,20 @@
+- name: Get Deployment status
+  shell: |
+    kubectl get pods --all-namespaces
+  register: deployment_results
+
+- name: Set deployment result
+  set_fact:
+    deployment_status: "{{deployment_results.stdout}}"
+
+- name: "Create Outputs"
+  template:
+    src: "outputs.j2"
+    dest: "/root/sunbird-rc/customization/outputs/outputs.txt"
+    mode: "0600"
+
+- name: Fetch file from remote server
+  fetch:
+    src: "/root/sunbird-rc/customization/outputs/outputs.txt"
+    dest: "{{ inventory_dir }}/"
+    flat: yes

@@ -1,0 +1,9 @@
+timezone: "Etc/UTC"
+wireguard_compose_location: /root/wireguard/compose
+wireguard_name: "openg2p_wg"
+wireguard_config_location: /etc/{{wireguard_name}}
+wireguard_subnet: "10.0.0.0/16"
+wireguard_port: "51820"
+wireguard_peers: "4"
+wireguard_client_allowed_ip: "0.0.0.0/0"
+

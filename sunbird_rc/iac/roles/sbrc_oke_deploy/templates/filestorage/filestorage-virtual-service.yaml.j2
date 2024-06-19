@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: filestorage
+spec:
+  gateways:
+    - istio-system/all-hosts
+  hosts:
+    - sbrcfs.{{domain}}
+  http:
+    - route:
+        - destination:
+            host: filestorage
+            port:
+              number: 9001
+      headers:
+        request:
+          set:
+            x-forwarded-proto: https

@@ -1,0 +1,71 @@
+- name: "Create directory"
+  file:
+    path: "/etc/{{ wireguard_name }}/templates"
+    state: directory
+    recurse: yes
+    mode: '0755'
+
+- name: Create docker compose location
+  file:
+    path: "{{wireguard_compose_location}}"
+    state: directory
+    mode: '0755'
+
+# - name: Copy file with owner and permissions
+#   copy:
+#     src: wg.sh
+#     dest: /root/wg.sh
+#     mode: '0744'
+
+# - name: Create wireguard config directory
+#   file:
+#     path: "{{host_config_location}}"
+#     state: directory
+#     mode: '0755'
+
+# - name: "copy server.conf"
+#   template:
+#     src: "server.conf.j2"
+#     dest: "/etc/{{ wireguard_name }}/templates/server.conf"
+#     mode: '0755'
+  
+# - name: "copy rules.sh"
+#   template:
+#     src: "rules.sh.j2"
+#     dest: "/etc/{{ wireguard_name }}/rules.sh"
+#     mode: '0755'
+
+- name: "deploy systemd service"
+  template:
+    src: "wireguard.service.j2"
+    dest: "/etc/systemd/system/wireguard.service"
+  notify: Restart Wireguard
+
+- name: "deploy docker compose file"
+  template:
+    src: "wireguard.docker-compose.j2"
+    dest: "{{ wireguard_compose_location }}/docker-compose.yml"
+  notify: Restart Wireguard
+
+- name: "set to auto restart"
+  systemd:
+    enabled: true
+    daemon_reload: true
+    name: "wireguard"
+    state: started
+
+# - name: "update ip route"
+#   shell: |
+#     sleep 120
+#     WG_CONT_IP=$(docker inspect -f '{{ '{{' }} range.NetworkSettings.Networks {{ '}}' }} {{ '{{' }} .IPAddress {{ '}}' }} {{ '{{' }} end {{ '}}' }}' {{wireguard_name}})
+#     ip route list | grep {{wireguard_subnet}} | grep $WG_CONT_IP
+#     if [ $? -eq 0 ]; then
+#       echo "route exists"
+#     else
+#       ip route add {{wireguard_subnet}} via $WG_CONT_IP
+#     fi
+
+# - name: "debug"
+#   debug: |
+#     msg="docker inspect -f '{{ '{{' }} range.NetworkSettings.Networks {{ '}}' }} {{ '{{' }} .IPAddress {{ '}}' }} {{ '{{' }} end {{ '}}' }}' {{wireguard_name}}"
+

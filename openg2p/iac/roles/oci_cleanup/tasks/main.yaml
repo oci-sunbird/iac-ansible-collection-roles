@@ -1,0 +1,23 @@
+- name: List log_analytics_entities
+  oracle.oci.oci_log_analytics_entity_facts:
+    namespace_name: "{{namespace}}"
+    compartment_id: "{{compartment_id}}"
+  register: log_analytics_entities_list_result
+
+- name: Delete log_analytics_entity
+  oracle.oci.oci_log_analytics_entity:
+    namespace_name: "{{namespace}}"
+    log_analytics_entity_id: "{{item.id}}"
+    state: absent
+  with_items: '{{log_analytics_entities_list_result.log_analytics_entities}}'
+
+- name: List block volumes
+  oracle.oci.oci_blockstorage_volume_facts:
+    compartment_id: "{{compartment_id}}"
+  register: block_volume_list_result
+
+- name: Delete block volume
+  oracle.oci.oci_blockstorage_volume:
+    volume_id: "{{item.id}}"
+    state: absent
+  with_items: '{{block_volume_list_result.volumes}}'

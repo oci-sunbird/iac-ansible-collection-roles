@@ -1,0 +1,21 @@
+- name: "Copy deployment check script"
+  copy:
+    src: "check_deployment.sh"
+    dest: "/root/check_deployment.sh"
+    mode: "0755"
+
+- name: Install Pip3
+  apt:
+    name: python3-pip
+    update_cache: yes
+
+- name: Install oci sdk
+  pip:
+    name: 
+      - pyOpenSSL
+      - oci
+
+- name: Remove OpenSSL python packages
+  shell: |
+    rm -R /usr/lib/python3/dist-packages/OpenSSL
+    pip3 install pyOpenSSL --upgrade

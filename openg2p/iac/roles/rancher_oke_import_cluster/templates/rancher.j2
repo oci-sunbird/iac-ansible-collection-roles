@@ -1,0 +1,107 @@
+
+### This doesnt work ref: https://github.com/rancher/rancher/issues/30722
+
+terraform {
+  required_providers {
+    rancher2 = {
+      source  = "rancher/rancher2"
+      version = "4.1.0"
+    }
+    http = {
+      source = "hashicorp/http"
+      version = "3.4.2"
+    }
+  }
+}
+
+provider "rancher2" {
+  alias = "admin"
+  api_url   = module.bootstrap.url
+  token_key = module.bootstrap.token
+}
+
+variable "server_url" {
+  default = "https://{{rancher_hostname}}"
+}
+
+variable "admin_password" {
+  default = "{{rancher_admin_password}}"
+}
+
+variable "ssl_cert" {
+  default = <<EOF
+  {{ssl_cert}}
+EOF
+}
+
+variable "ssl_cert_key" {
+  default = <<EOF
+  {{ssl_cert_key}}
+EOF
+}
+
+
+
+module "bootstrap" {
+  source                         = "./bootstrap"
+  server_url                     = var.server_url
+  admin_password                 = var.admin_password
+}
+
+resource "rancher2_setting" "server_url" {
+  provider = rancher2.admin
+  name     = "server-url"
+  value    = var.server_url
+}
+
+resource "rancher2_cluster" "openg2p_k8s_cluster" {
+  provider    = rancher2.admin
+  name        = "{{oke_k8s_cluster_name | replace("_", "-") }}"
+  description = "OpenG2P K8S Cluster"
+}
+
+
+data "http" "idp_metadata" {
+  url    = "https://keycloak-rancher.{{domain}}/realms/master/protocol/saml/descriptor"
+  method = "GET"
+}
+
+resource "rancher2_auth_config_keycloak" "keycloak" {
+  provider    = rancher2.admin
+  display_name_field = "givenName"
+  groups_field = "member"
+  idp_metadata_content = data.http.idp_metadata.response_body
+  rancher_api_host = "https://rancher.{{domain}}"
+  sp_cert = var.ssl_cert
+  sp_key = var.ssl_cert_key
+  uid_field = "username"
+  user_name_field = "email"
+
+}
+
+
+resource "null_resource" "run_kubectl" {
+  provisioner "local-exec" {
+    command     = <<-EOT
+          ${rancher2_cluster.openg2p_k8s_cluster.cluster_registration_token[0].command}
+    EOT
+    working_dir = path.module
+  }
+  
+  triggers = {
+    token = rancher2_cluster.openg2p_k8s_cluster.cluster_registration_token[0].token
+  }
+  depends_on = [
+    rancher2_cluster.openg2p_k8s_cluster
+  ]
+}
+
+
+output "cluster_registration_token" {
+  sensitive = true
+  value     = rancher2_cluster.openg2p_k8s_cluster.cluster_registration_token[0].token
+}
+
+output "cluster_registration_command" {
+  value     = rancher2_cluster.openg2p_k8s_cluster.cluster_registration_token[0].command
+}

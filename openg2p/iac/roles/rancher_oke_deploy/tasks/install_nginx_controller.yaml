@@ -1,0 +1,59 @@
+- name: Upload ssl cert private key
+  copy:
+    src: "{{ ansible_ssl_cert_private_key_file }}"
+    dest: "/root/.ssh/ssl_cert_private_key.key"
+    mode: "0600"
+
+- name: Upload ssl cert file
+  copy:
+    src: "{{ ansible_ssl_cert_file }}"
+    dest: "/root/.ssh/ssl_cert.pem"
+    mode: "0600"
+
+- name: Create ssl secret for rancher ingress tls
+  shell: |
+    kubectl create ns ingress-nginx
+    kubectl -n ingress-nginx delete secret tls-ingress-nginx
+    kubectl create secret tls tls-ingress-nginx -n ingress-nginx  \
+    --cert=/root/.ssh/ssl_cert.pem \
+    --key=/root/.ssh/ssl_cert_private_key.key
+  ignore_errors: true
+  
+- name: Remove ssl cert private key
+  ansible.builtin.file:
+    path: /root/.ssh/ssl_cert_private_key.key
+    state: absent
+
+- name: Remove ssl cert file
+  ansible.builtin.file:
+    path: /root/.ssh/ssl_cert.pem
+    state: absent
+
+
+- name: Add a nginx helm repository
+  kubernetes.core.helm_repository:
+    name: ingress-nginx
+    repo_url: https://kubernetes.github.io/ingress-nginx
+
+- name: Install nginx controller
+  kubernetes.core.helm:
+    name: ingress-nginx
+    chart_ref: ingress-nginx/ingress-nginx
+    chart_version: 4.10.0
+    release_namespace: ingress-nginx
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      controller:
+        extraArgs:
+          default-ssl-certificate: ingress-nginx/tls-ingress-nginx
+        service:
+          externalTrafficPolicy: Local
+          annotations:
+            oci.oraclecloud.com/load-balancer-type: nlb
+            oci-network-load-balancer.oraclecloud.com/internal: true
+            oci-network-load-balancer.oraclecloud.com/is-preserve-source: true
+            oci-network-load-balancer.oraclecloud.com/oci-network-security-groups: "{{nsg_lb_oke_obs_cluster}}"
+
+- name: Get deployments in ingress-nginx namespace
+  shell: bash /root/check_deployment.sh ingress-nginx

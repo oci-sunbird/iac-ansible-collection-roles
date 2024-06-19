@@ -1,0 +1,8 @@
+- name: Deploy minio
+  shell: |
+    export SANDBOX_HOSTNAME={{domain}}
+    cd /root/openg2p-deployment/kubernetes/minio
+    ./install.sh
+
+- name: Wait for deployments in minio namespace
+  shell: bash /root/check_deployment.sh minio

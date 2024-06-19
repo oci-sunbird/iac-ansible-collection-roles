@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+
+from jwcrypto import jwk
+import json
+from datetime import datetime
+import csv
+import sys
+import requests
+
+# Generate RSA key pair
+key = jwk.JWK.generate(kty='RSA', size=2048)
+
+private_key_json = key.export()
+with open('private_key.json', 'w') as private_key_file:
+    private_key_file.write(private_key_json)
+
+public_key_str = key.export(private_key=False)
+with open('public_key.json', 'w') as public_key_file:
+    public_key_file.write(public_key_str)
+
+public_key_json = json.loads(public_key_str)
+
+api_url = "https://esignet.{{domain}}/v1/esignet/client-mgmt/oauth-client"
+json_data = {
+    "requestTime": datetime.utcnow().isoformat(timespec="milliseconds")+"Z",
+    "request": {
+      "clientId": "sparclientid",
+      "clientName": "SPAR",
+      "relyingPartyId": "dummyrelyingpartyid",
+      "publicKey":  public_key_json,
+      "userClaims": [
+        "birthdate","address","gender","name","phone_number","email","picture"
+      ],
+      "authContextRefs": [
+        "mosip:idp:acr:biometrics","mosip:idp:acr:generated-code"
+      ],
+      "logoUri": "https://upload.wikimedia.org/wikipedia/commons/8/85/Logo-Test.png",
+      "redirectUris": [
+        "https://spar.{{domain}}/spar/v1/oauth2/callback"
+      ],
+      "grantTypes": [
+        "authorization_code"
+      ],
+      "clientAuthMethods": [
+        "private_key_jwt"
+      ],
+     "clientNameLangMap": {
+        "eng": "SPAR",
+      }
+    }
+}
+api_res = requests.post(api_url, json=json_data)
+api_res.raise_for_status()
+print(f"OIDC Client Creation Status", api_res.text)

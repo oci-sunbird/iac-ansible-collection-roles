@@ -1,0 +1,54 @@
+# - name: Upload ssl cert private key
+#   copy:
+#     src: "{{ ansible_ssl_cert_private_key_file }}"
+#     dest: "/root/.ssh/ssl_cert_private_key.key"
+#     mode: "0600"
+
+# - name: Upload ssl cert file
+#   copy:
+#     src: "{{ ansible_ssl_cert_file }}"
+#     dest: "/root/.ssh/ssl_cert.pem"
+#     mode: "0600"
+
+# - name: Create ssl secret for rancher ingress tls
+#   shell: |
+#     kubectl create ns cattle-system
+#     kubectl -n cattle-system delete secret tls-rancher-ingress
+#     kubectl create secret tls tls-rancher-ingress -n cattle-system \
+#     --cert=/root/.ssh/ssl_cert.pem \
+#     --key=/root/.ssh/ssl_cert_private_key.key
+#   ignore_errors: true
+  
+# - name: Remove ssl cert private key
+#   ansible.builtin.file:
+#     path: /root/.ssh/ssl_cert_private_key.key
+#     state: absent
+
+# - name: Remove ssl cert file
+#   ansible.builtin.file:
+#     path: /root/.ssh/ssl_cert.pem
+#     state: absent
+
+- name: Add a rancher helm repository
+  kubernetes.core.helm_repository:
+    name: rancher-latest
+    repo_url: https://releases.rancher.com/server-charts/latest
+
+- name: Install rancher
+  kubernetes.core.helm:
+    name: rancher
+    chart_ref: rancher-latest/rancher
+    release_namespace: cattle-system
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      hostname: "{{rancher_hostname}}"
+      bootstrapPassword: "{{rancher_admin_password}}"
+      tls: external
+      ingress: 
+        tls:
+          source: secret
+        ingressClassName: "nginx"
+
+- name: Get deployments in cattle-system namespace
+  shell: bash /root/check_deployment.sh cattle-system 

@@ -1,0 +1,8 @@
+- name: Deploy kafka
+  shell: |
+    export SANDBOX_HOSTNAME={{domain}}
+    cd /root/openg2p-deployment/kubernetes/kafka
+    ./install.sh
+
+- name: Wait for deployments in kafka namespace
+  shell: bash /root/check_deployment.sh kafka

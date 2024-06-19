@@ -1,0 +1,27 @@
+- name: "Upload data loader script"
+  template:
+    src: "esignet/upload_data_to_mock_esignet.py.j2"
+    dest: "/root/openg2p/customization/esignet/upload_data_to_mock_esignet.py"
+    mode: '0755'
+
+- name: "Upload sample seed data file"
+  copy:
+    src: "esignet/sample_data2.csv"
+    dest: "/root/openg2p/customization/esignet/sample_data2.csv"
+    mode: '0755'
+
+- name: Check if data load is already done
+  stat:
+    path: /root/openg2p/customization/esignet/data_load.done
+  register: data_load_file
+
+- name: Load sample seed data to esignet
+  shell: |
+    #!/bin/bash
+    cd /root/openg2p/customization/esignet/
+    python3 upload_data_to_mock_esignet.py /root/openg2p/customization/esignet/sample_data2.csv
+    if [ $? -eq 0 ]; then
+      echo "Data load completed successfully" > /root/openg2p/customization/esignet/data_load.done
+    fi
+  register: data_load
+  when: not data_load_file.stat.exists

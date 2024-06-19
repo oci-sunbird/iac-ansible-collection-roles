@@ -1,0 +1,15 @@
+- name: Install claim-ms
+  kubernetes.core.helm:
+    name: claim-ms
+    chart_ref: daas/claim-ms
+    release_namespace: sunbird-rc
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      claim_msenv:
+        connectionInfo_uri: "{{claims_ms_db_url}}"
+        connectionInfo_username: "{{postgres_connectionInfo_username}}"
+        connectionInfo_password: "{{postgres_connectionInfo_password}}"
+
+- name: Wait for deployments in sunbird-rc namespace
+  shell: bash /root/check_deployment.sh sunbird-rc

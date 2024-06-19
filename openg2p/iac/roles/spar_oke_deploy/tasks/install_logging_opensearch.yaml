@@ -1,0 +1,9 @@
+- name: Deploy Logging
+  shell: |
+    export SANDBOX_HOSTNAME={{domain}}
+    cd /root/openg2p-deployment/kubernetes/logging
+    ./install.sh
+
+## Temporarliy disabled
+# - name: Wait for deployments in cattle-logging-system namespace
+#   shell: bash /root/check_deployment.sh cattle-logging-system

@@ -1,0 +1,20 @@
+- name: Include variables from file
+  include_vars:
+    file: "{{ inventory_dir }}/vault_secrets.yaml"
+
+- name: Install identity
+  kubernetes.core.helm:
+    name: identity
+    chart_ref: daas/identity
+    release_namespace: sunbird-rc
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      global:
+        host: "sbrc.{{domain}}"
+        secrets:
+          VAULT_SECRET_TOKEN: "{{vault_root_token |b64encode }}"
+          DB_URL: "{{db_url |b64encode}}"
+
+- name: Wait for deployments in sunbird-rc namespace
+  shell: bash /root/check_deployment.sh sunbird-rc

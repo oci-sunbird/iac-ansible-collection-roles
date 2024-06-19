@@ -1,0 +1,39 @@
+- name: Create cleanup directory
+  file:
+    path: "/root/rancher/cleanup"
+    state: directory
+    mode: '0755'
+
+- name: Copy cleanup script
+  template:
+    src: uninstall.j2
+    dest: "/root/rancher/cleanup/uninstall.sh"
+    mode: '0755'
+
+- name: Copy rancher cleanup script
+  template:
+    src: cleanup.j2
+    dest: "/root/rancher/cleanup/cleanup.sh"
+    mode: '0755'
+
+# - name: "Execute rancher terraform"
+#   shell: |
+#     cd /root/rancher/terraform/
+#     tofu init
+#     tofu destroy -auto-approve
+
+# - name: Uninstall longhorn
+#   shell: |
+#     kubectl -n longhorn-system patch -p '{"value": "true"}' --type=merge lhs deleting-confirmation-flag
+#   ignore_errors: true
+
+- name: Uninstall applications
+  shell: /root/rancher/cleanup/uninstall.sh {{item}}
+  with_items:
+    - cattle-system
+    - keycloak
+    - ingress-nginx
+  ignore_errors: true
+
+# - name: Running rancher clean up script
+#   shell: /root/rancher/cleanup/cleanup.sh force

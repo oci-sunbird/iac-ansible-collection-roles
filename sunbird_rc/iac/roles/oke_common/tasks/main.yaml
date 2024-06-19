@@ -1,0 +1,100 @@
+- name: Upload ssh key
+  copy:
+    src: "{{ ansible_ssh_private_key_file }}"
+    dest: "/root/.ssh/{{ base_domain }}.key"
+    mode: "0600"
+
+- name: Create oci cli config directory
+  file:
+    path: "/root/.oci/"
+    state: directory
+    mode: '0755'
+
+- name: Create kube config directory
+  file:
+    path: "/root/.kube/"
+    state: directory
+    mode: '0755'
+
+- name: "Create oci cli config"
+  template:
+    src: "oci_cli_config.j2"
+    dest: "/root/.oci/config"
+    mode: "0600"
+
+- name: Upload bastion user api key
+  copy:
+    src: "{{ ansible_bastion_iam_private_key_file }}"
+    dest: "/root/.oci/bastion.key"
+    mode: "0600"
+
+- name: Install oci cli
+  shell: |
+    wget -q https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh -O /root/install.sh
+    chmod +x /root/install.sh
+    /root/install.sh --accept-all-defaults
+    rm  /root/install.sh
+    cp /root/bin/oci /usr/local/bin/
+
+- name: Generate kube config for oke k8s cluster
+  shell: |
+    oci ce cluster create-kubeconfig --cluster-id {{oke_k8s_cluster_id}} --file /root/.kube/oke_k8s_config --region {{region}} --token-version 2.0.0  --kube-endpoint PRIVATE_ENDPOINT
+    chmod 600 /root/.kube/oke_k8s_config
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install dependencies
+  package:
+    name:
+      - python3
+      - curl
+
+- name: Install kubectl
+  shell: |
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+- name: Install helm
+  shell: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+- name: Install kubectx
+  shell: |
+    wget -q https://github.com/ahmetb/kubectx/releases/download/v0.9.5/kubectx -O /usr/local/bin/kubectx
+    chmod +x /usr/local/bin/kubectx
+
+- name: Install kubens
+  shell: |
+    wget -q https://github.com/ahmetb/kubectx/releases/download/v0.9.5/kubens -O /usr/local/bin/kubens
+    chmod +x /usr/local/bin/kubens
+
+- name: Install k9s
+  ansible.builtin.unarchive:
+    src: https://github.com/derailed/k9s/releases/download/v0.32.4/k9s_Linux_amd64.tar.gz
+    dest: /usr/local/bin/
+    include: 
+      - "k9s"
+    remote_src: yes
+
+- name: Install istioctl
+  shell: |
+    export ISTIO_VERSION=1.21.0
+    curl -L https://istio.io/downloadIstio > /root/istio_install.sh
+    chmod +x /root/istio_install.sh
+    cd /root
+    ./istio_install.sh
+    rm /root/istio_install.sh
+
+
+- name: set environment values
+  blockinfile:
+    path: /root/.bashrc
+    block: |
+      export KUBECONFIG=/root/.kube/oke_k8s_config
+      export PATH=/root/istio-1.21.0/bin:$PATH
+      alias k=kubectl
+      alias kctx=kubectx
+      alias kns=kubens
+    state: present
+    create: true

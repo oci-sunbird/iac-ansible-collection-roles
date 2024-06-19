@@ -1,0 +1,7 @@
+#!/bin/sh
+
+cat /config/rules.sh | sed "s/iptables -A/iptables -D/g" | grep -vi "cat\|chmod" > /postdown.rules.sh
+chmod +x /postdown.rules.sh
+iptables -A FORWARD -i wg0 -j ACCEPT
+iptables -A FORWARD -o wg0 -j ACCEPT
+iptables -A POSTROUTING -t nat -o eth0 -j MASQUERADE
