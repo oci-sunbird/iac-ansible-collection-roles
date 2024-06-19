@@ -1,0 +1,44 @@
+- name: "Copy deployment check script"
+  copy:
+    src: "check_deployment.sh"
+    dest: "/root/check_deployment.sh"
+    mode: "0755"
+
+- name: Create a k8s namespace
+  kubernetes.core.k8s:
+    name: "{{item}}"
+    api_version: v1
+    kind: Namespace
+    state: present
+  with_items:
+    - usct
+    - sandbox-im
+
+- name: Cleanup previously cloned repository
+  ansible.builtin.file:
+    path: /root/govstack/usct_backend
+    state: absent
+
+
+- name: Clone Sandbox Backend Deployment Repo
+  ansible.builtin.git:
+    repo: https://github.com/oci-sunbird/sandbox-usecase-usct-backend.git
+    dest: /root/govstack/usct_backend
+    single_branch: yes
+    version: customized_backend
+
+- name: Deploy service monitors
+  shell: kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
+
+- name: Add a metrics-server helm repository
+  kubernetes.core.helm_repository:
+    name: metrics-server
+    repo_url: https://kubernetes-sigs.github.io/metrics-server/
+
+- name: Install metrics-server
+  kubernetes.core.helm:
+    name: metrics-server
+    chart_ref: metrics-server/metrics-server
+    release_namespace: monitoring
+    create_namespace: true
+    update_repo_cache: true

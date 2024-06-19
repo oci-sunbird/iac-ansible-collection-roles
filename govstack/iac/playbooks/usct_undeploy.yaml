@@ -1,0 +1,6 @@
+- hosts: bastion
+  become: true
+  environment:
+    KUBECONFIG: "/root/.kube/oke_k8s_config"
+  roles:
+    - govstack.iac.usct_undeploy

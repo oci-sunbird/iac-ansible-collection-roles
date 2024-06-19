@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Define the partial name of the pod you're looking for
+POD_NAME_PART="backend"
+
+# Get the full name of the pod
+POD_NAME=$(kubectl -n {{usct_namespace}} get pods --no-headers -o custom-columns=":metadata.name" | grep "^${POD_NAME_PART}")
+
+# Check if the pod was found
+if [ -z "$POD_NAME" ]; then
+  echo "Pod with name containing '${POD_NAME_PART}' not found."
+  exit 1
+fi
+
+# Run the command in the identified pod
+kubectl -n {{usct_namespace}} exec "$POD_NAME" -- python manage.py migrate
+
+# Check if the command was successful
+if [ $? -ne 0 ]; then
+  echo "Command failed to run in pod ${POD_NAME}"
+  exit 1
+else
+  echo "Command executed successfully in pod ${POD_NAME}"
+fi

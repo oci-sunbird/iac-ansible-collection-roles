@@ -1,0 +1,45 @@
+- name: Checking if zone is already present
+  oracle.oci.oci_dns_zone_facts:
+    compartment_id: "{{zone_compartment_id}}"
+    name: "{{domain}}"
+  register: result
+  
+- name: Dump result
+  debug: 
+    msg: '{{result}}'
+
+- name: Create zone 
+  oracle.oci.oci_dns_zone:
+    name: "{{domain}}"
+    compartment_id: "{{zone_compartment_id}}"
+    zone_type: PRIMARY
+  when: result.zones | length == 0
+
+- name: Get the external ip of the nginx ingress controller
+  shell: |
+    EXTERNAL_IP=$(kubectl get svc -n ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    echo $EXTERNAL_IP
+  register: rancher_external_ip
+
+
+- name: Update rrset
+  oracle.oci.oci_dns_rrset:
+    zone_name_or_id: "{{domain}}"
+    domain: "{{item}}.{{domain}}"
+    rtype: "A"
+    update_items:
+    - domain: "{{item}}.{{domain}}"
+      rdata: "{{rancher_external_ip.stdout}}"
+      rtype: "A"
+      ttl: 300
+    compartment_id: "{{zone_compartment_id}}"
+  with_items:
+    - consent-keycloak
+    - consentbb-admin-dashboard
+    - consentbb-privacy-dashboard
+    - consentbb-api
+    - usct-frontend
+    - im-ss1
+    - im-ss2
+    - im-ss3
+    - im-cs

@@ -1,0 +1,44 @@
+- name: Create cleanup directory
+  file:
+    path: "/root/cleanup"
+    state: directory
+    mode: '0755'
+
+- name: Copy cleanup script
+  template:
+    src: uninstall.j2
+    dest: "/root/cleanup/uninstall.sh"
+    mode: '0755'
+
+- name: Uninstall applications
+  shell: /root/cleanup/uninstall.sh {{item}}
+  with_items:
+    - ingress-nginx
+  ignore_errors: true
+
+- name: Uninstall USCT
+  shell: |
+    helm uninstall usct --namespace sandbox-im
+    sleep 60
+    for pvc in $(kubectl -n sandbox-im get pvc -o name); do
+      kubectl -n sandbox-im delete $pvc
+    done
+
+- name: Remove zone records
+  oracle.oci.oci_dns_rrset:
+    zone_name_or_id: "{{domain}}"
+    domain: "{{item}}.{{domain}}"
+    rtype: "A"
+    state: absent
+  with_items:
+    - consent-keycloak
+    - consentbb-admin-dashboard
+    - consentbb-privacy-dashboard
+    - consentbb-api
+    - usct-frontend
+    - im-ss1
+    - im-ss2
+    - im-ss3
+    - im-cs
+
+
