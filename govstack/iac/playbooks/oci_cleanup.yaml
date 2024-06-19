@@ -1,0 +1,4 @@
+- hosts: bastion
+  become: true
+  roles:
+    - govstack.iac.oci_cleanup
