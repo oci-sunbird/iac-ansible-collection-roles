@@ -35,6 +35,26 @@
     name: metrics-server
     repo_url: https://kubernetes-sigs.github.io/metrics-server/
 
+- name: Add a certmanager helm repository
+  kubernetes.core.helm_repository:
+    name: jetstack
+    repo_url: https://charts.jetstack.io
+
+- name: Add a ACME webhook for Oracle Cloud Infrastructure helm repository
+  kubernetes.core.helm_repository:
+    name: cert-manager-webhook-oci
+    repo_url: https://dn13.gitlab.io/cert-manager-webhook-oci
+
+
+- name: Create project directories
+  file:
+    path: "{{item}}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - /root/proj_govstack/customization
+    - /root/proj_govstack/customization/cert-manager
+
 - name: Install metrics-server
   kubernetes.core.helm:
     name: metrics-server

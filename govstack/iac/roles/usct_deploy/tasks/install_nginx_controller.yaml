@@ -1,33 +1,33 @@
-- name: Upload ssl cert private key
-  copy:
-    src: "{{ ansible_ssl_cert_private_key_file }}"
-    dest: "/root/.ssh/ssl_cert_private_key.key"
-    mode: "0600"
+# - name: Upload ssl cert private key
+#   copy:
+#     src: "{{ ansible_ssl_cert_private_key_file }}"
+#     dest: "/root/.ssh/ssl_cert_private_key.key"
+#     mode: "0600"
 
-- name: Upload ssl cert file
-  copy:
-    src: "{{ ansible_ssl_cert_file }}"
-    dest: "/root/.ssh/ssl_cert.pem"
-    mode: "0600"
+# - name: Upload ssl cert file
+#   copy:
+#     src: "{{ ansible_ssl_cert_file }}"
+#     dest: "/root/.ssh/ssl_cert.pem"
+#     mode: "0600"
 
-- name: Create ssl secret for rancher ingress tls
-  shell: |
-    kubectl create ns ingress-nginx
-    kubectl -n ingress-nginx delete secret tls-ingress-nginx
-    kubectl create secret tls tls-ingress-nginx -n ingress-nginx  \
-    --cert=/root/.ssh/ssl_cert.pem \
-    --key=/root/.ssh/ssl_cert_private_key.key
-  ignore_errors: true
+# - name: Create ssl secret for rancher ingress tls
+#   shell: |
+#     kubectl create ns ingress-nginx
+#     kubectl -n ingress-nginx delete secret tls-ingress-nginx
+#     kubectl create secret tls tls-ingress-nginx -n ingress-nginx  \
+#     --cert=/root/.ssh/ssl_cert.pem \
+#     --key=/root/.ssh/ssl_cert_private_key.key
+#   ignore_errors: true
   
-- name: Remove ssl cert private key
-  ansible.builtin.file:
-    path: /root/.ssh/ssl_cert_private_key.key
-    state: absent
+# - name: Remove ssl cert private key
+#   ansible.builtin.file:
+#     path: /root/.ssh/ssl_cert_private_key.key
+#     state: absent
 
-- name: Remove ssl cert file
-  ansible.builtin.file:
-    path: /root/.ssh/ssl_cert.pem
-    state: absent
+# - name: Remove ssl cert file
+#   ansible.builtin.file:
+#     path: /root/.ssh/ssl_cert.pem
+#     state: absent
 
 
 - name: Add a nginx helm repository
@@ -46,7 +46,7 @@
     values:
       controller:
         extraArgs:
-          default-ssl-certificate: "ingress-nginx/tls-ingress-nginx"
+          default-ssl-certificate: "ingress-nginx/{{ domain | replace('.', '-') }}"
         service:
           externalTrafficPolicy: Local
           annotations:
