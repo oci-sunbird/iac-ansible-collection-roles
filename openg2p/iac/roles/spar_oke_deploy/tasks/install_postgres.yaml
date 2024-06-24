@@ -1,3 +1,9 @@
+- name: Postgres init override values
+  template:
+    src: "postgres/values-init.yaml.j2"
+    dest: "/root/openg2p-deployment/kubernetes/postgresql/values-init.yaml"
+    mode: '0755'
+
 - name: Deploy Postgres
   shell: |
     export POSTGRES_ISTIO_ENABLED=true
