@@ -12,7 +12,6 @@
     update_repo_cache: true
     values:
       additionalArguments: 
-        - "--entryPoints.web.address=:80"
         - "--entryPoints.web.forwardedHeaders.insecure"
       service:
         annotations: 
