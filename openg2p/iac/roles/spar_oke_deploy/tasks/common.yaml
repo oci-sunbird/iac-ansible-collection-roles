@@ -15,6 +15,7 @@
     repo: https://github.com/oci-sunbird/openg2p-deployment.git
     dest: /root/openg2p-deployment
     single_branch: yes
+    force: true
     version: v1.1.1
 
 - name: Clone MOSIP infra Deployment Repo
