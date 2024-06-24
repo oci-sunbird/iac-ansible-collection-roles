@@ -1,0 +1,26 @@
+- name: Add a traefik helm repository
+  kubernetes.core.helm_repository:
+    name: traefik
+    repo_url: https://traefik.github.io/charts
+
+- name: Install traefik
+  kubernetes.core.helm:
+    name: traefik
+    chart_ref: traefik/traefik
+    release_namespace: traefik
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      service:
+        annotations: 
+          oci.oraclecloud.com/load-balancer-type: lb
+          service.beta.kubernetes.io/oci-load-balancer-internal: true
+          service.beta.kubernetes.io/oci-load-balancer-backend-protocol: HTTP
+          service.beta.kubernetes.io/oci-load-balancer-shape: flexible
+          service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: 100
+          service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: 10
+          service.beta.kubernetes.io/oci-load-balancer-ssl-ports: 443
+          oci.oraclecloud.com/oci-network-security-groups: "{{nsg_lb_oke_k8s_cluster}}"
+
+- name: Wait for deployments in traefik namespace
+  shell: bash /root/check_deployment.sh traefik
