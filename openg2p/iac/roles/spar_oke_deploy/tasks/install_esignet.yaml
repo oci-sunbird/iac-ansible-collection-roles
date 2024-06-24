@@ -46,8 +46,6 @@
           branch: master
       mock-identity-system:
         enabled: true
-        nameOverride: esignet-mock-id
-        artifactoryInstallationName: '{{ .Release.Name }}-esignet-artifactory'
         artifactory:
           enabled: true
         postgresqlInstallationName: 'postgres-postgresql'
