@@ -21,6 +21,12 @@
     dest: "/root/openg2p/customization/kubernetes/keymanager/global-conf-map.yaml"
     mode: '0755'
 
+- name: "Update keymanager config server values"
+  template:
+    src: "keymanager/config-server-values.yaml.j2"
+    dest: "/root/openg2p/customization/kubernetes/keymanager/config-server-values.yaml"
+    mode: '0755'
+
 - name: Deploy Keymanager
   shell: |
     export SANDBOX_HOSTNAME={{domain}}
