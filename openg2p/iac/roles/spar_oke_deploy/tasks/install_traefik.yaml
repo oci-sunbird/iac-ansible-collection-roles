@@ -13,6 +13,7 @@
     values:
       additionalArguments: 
         - "--entryPoints.web.forwardedHeaders.insecure"
+        - "--log.level=DEBUG"
       service:
         annotations: 
           oci.oraclecloud.com/load-balancer-type: "lb"
