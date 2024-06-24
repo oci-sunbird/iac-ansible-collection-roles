@@ -30,6 +30,13 @@
     name: mosip
     repo_url: https://mosip.github.io/mosip-helm
 
+
+- name: Add a openg2p helm repository
+  kubernetes.core.helm_repository:
+    name: openg2p
+    repo_url: https://openg2p.github.io/openg2p-helm
+
+
 - name: Create project directories
   file:
     path: "{{item}}"

@@ -1,8 +1,64 @@
-- name: Deploy Esignet
-  shell: |
-    export SANDBOX_HOSTNAME={{domain}}
-    cd /root/openg2p-deployment/kubernetes/esignet
-    ./install.sh
+# - name: Deploy Esignet
+#   shell: |
+#     export SANDBOX_HOSTNAME={{domain}}
+#     cd /root/openg2p-deployment/kubernetes/esignet
+#     ./install.sh
 
-- name: Wait for deployments in esignet namespace
-  shell: bash /root/check_deployment.sh esignet
+# - name: Wait for deployments in esignet namespace
+#   shell: bash /root/check_deployment.sh esignet
+
+
+- name: Install Esignet
+  kubernetes.core.helm:
+    name: esignet
+    chart_ref: openg2p/esignet
+    release_namespace: esignet
+    chart_version: 1.4.0
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      global:
+        esignetHostname: "esignet.{{domain}}"
+        keycloakBaseUrl: 'https://keycloak.{{domain}}'
+      istio:
+        enabled: true
+        virtualservice:
+          enabled: true
+          host: "esignet.{{domain}}"
+          gateway: "{{default_istio_gateway}}"
+      postgresql:
+        enabled: false 
+        nameOverride: postgres-postgresql
+      postgresInit:
+        enabled: false
+      oidcUi:
+        enabled: true
+        istio:
+          enabled: true
+          virtualservice:
+            enabled: true
+            host: "esignet.{{domain}}"
+            gateway: "{{default_istio_gateway}}"
+      springConfig:
+        gitRepo:
+          enabled: true
+          repoUrl: https://github.com/openg2p/mosip-config
+          branch: master
+      mock-identity-system:
+        enabled: true
+        nameOverride: esignet-mock-id
+        artifactoryInstallationName: '{{ .Release.Name }}-esignet-artifactory'
+        artifactory:
+          enabled: true
+        postgresqlInstallationName: 'postgres-postgresql'
+        postgresql:
+          enabled: false
+        softhsm:
+          nameOverride: esignet-mock-id-softhsm
+        springConfig:
+          names: application,mock-identity-system
+          profile: default
+          gitRepo:
+            enabled: true
+            repoUrl: https://github.com/openg2p/mosip-config
+            branch: master
