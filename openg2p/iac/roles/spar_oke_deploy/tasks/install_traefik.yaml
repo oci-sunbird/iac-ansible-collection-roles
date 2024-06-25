@@ -18,6 +18,8 @@
         access: 
           enabled: true 
       ports: 
+        web: 
+          asDefault: true
         websecure:
           tls:
             enabled: false
@@ -58,9 +60,9 @@
   shell: |
     kubectl apply -f /root/traefik/ingress_route.yaml
 
-- name: Apply ingress routes tracing
-  shell: |
-    kubectl apply -f /root/traefik/ingress_route_jaeger.yaml
+# - name: Apply ingress routes tracing
+#   shell: |
+#     kubectl apply -f /root/traefik/ingress_route_jaeger.yaml
 
 # - name: Apply ingress
 #   shell: |
