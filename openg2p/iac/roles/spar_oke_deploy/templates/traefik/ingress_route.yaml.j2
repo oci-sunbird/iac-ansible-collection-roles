@@ -5,7 +5,6 @@ metadata:
   namespace: sample
 spec:
   entryPoints:
-    # - websecure
     - web
   routes:
   - match: Host(`hello.{{domain}}`) && PathPrefix(`/`)
@@ -16,6 +15,6 @@ spec:
       namespace: sample
       port: 5000
       scheme: http
-  tls:                           
-    domains:                   
-    - main: hello.{{domain}}
+  # tls:                           
+  #   domains:                   
+  #   - main: hello.{{domain}}
