@@ -29,7 +29,7 @@
           service.beta.kubernetes.io/oci-load-balancer-shape: "flexible"
           service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: "100"
           service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: "10"
-          service.beta.kubernetes.io/oci-load-balancer-ssl-ports: "443"
+          service.beta.kubernetes.io/oci-load-balancer-ssl-ports: "websecure"
           oci.oraclecloud.com/oci-network-security-groups: "{{nsg_lb_oke_k8s_cluster}}"
 
 # - name: Wait for deployments in traefik namespace
