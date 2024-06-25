@@ -70,7 +70,6 @@
         annotations: 
           oci.oraclecloud.com/load-balancer-type: "nlb"
           oci-network-load-balancer.oraclecloud.com/internal: "false"
-          oci-network-load-balancer.oraclecloud.com/is-preserve-source: "false"
           oci.oraclecloud.com/oci-network-security-groups: "{{nsg_lb_oke_k8s_cluster}}"
 
 - name: Wait for deployments in traefik namespace
