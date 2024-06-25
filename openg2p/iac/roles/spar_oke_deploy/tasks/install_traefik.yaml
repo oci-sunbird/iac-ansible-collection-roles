@@ -16,6 +16,10 @@
           level: DEBUG 
         access: 
           enabled: true 
+      ports: 
+        websecure:
+          tls:
+            enabled: false
       service:
         annotations: 
           oci.oraclecloud.com/load-balancer-type: "lb"
