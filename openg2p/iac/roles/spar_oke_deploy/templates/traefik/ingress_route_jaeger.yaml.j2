@@ -1,0 +1,18 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress_tracing
+  namespace: istio-system
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`tracing.{{domain}}`) && PathPrefix(`/`)
+    kind: Rule
+    priority: 1
+    services:
+    - name: tracing
+      namespace: istio-system
+      passHostHeader: true
+      port: 80
+      scheme: http

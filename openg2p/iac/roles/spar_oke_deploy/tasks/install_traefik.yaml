@@ -42,6 +42,12 @@
     dest: "/root/traefik/ingress_route.yaml"
     mode: '0755'
 
+- name: Copy ingress routes
+  template:
+    src: "traefik/ingress_route_jaeger.yaml.j2"
+    dest: "/root/traefik/ingress_route_jaeger.yaml"
+    mode: '0755'
+
 - name: Copy ingress
   template:
     src: "traefik/ingress.yaml.j2"
@@ -51,6 +57,10 @@
 - name: Apply ingress routes
   shell: |
     kubectl apply -f /root/traefik/ingress_route.yaml
+
+- name: Apply ingress routes tracing
+  shell: |
+    kubectl apply -f /root/traefik/ingress_route_jaeger.yaml
 
 # - name: Apply ingress
 #   shell: |
