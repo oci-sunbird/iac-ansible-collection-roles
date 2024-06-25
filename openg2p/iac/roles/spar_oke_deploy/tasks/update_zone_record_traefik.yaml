@@ -35,6 +35,5 @@
     compartment_id: "{{zone_compartment_id}}"
   with_items:
     - hello
-    - helloworld
 
     
