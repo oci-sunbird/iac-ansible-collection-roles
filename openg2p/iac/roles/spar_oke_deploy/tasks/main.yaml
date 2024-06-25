@@ -1,17 +1,17 @@
 
 - include_tasks: common.yaml
-# - include_tasks: install_istio_operator.yaml
-# - include_tasks: install_prometheus.yaml
+- include_tasks: install_istio_operator.yaml
+- include_tasks: install_prometheus.yaml
 - include_tasks: update_zone_record.yaml
-# - include_tasks: install_postgres.yaml
-# - include_tasks: install_keycloak.yaml
-# - include_tasks: install_minio_object_store.yaml
-# - include_tasks: install_msg_gateway.yaml
-# - include_tasks: install_captcha.yaml
-# - include_tasks: install_odk.yaml
-# - include_tasks: install_kafka.yaml
-# - include_tasks: install_logging_opensearch.yaml
-# - include_tasks: install_activemq_artemis.yaml
+- include_tasks: install_postgres.yaml
+- include_tasks: install_keycloak.yaml
+- include_tasks: install_minio_object_store.yaml
+- include_tasks: install_msg_gateway.yaml
+- include_tasks: install_captcha.yaml
+- include_tasks: install_odk.yaml
+- include_tasks: install_kafka.yaml
+- include_tasks: install_logging_opensearch.yaml
+- include_tasks: install_activemq_artemis.yaml
 - include_tasks: install_key_manager.yaml
 # - include_tasks: install_esignet.yaml
 # - include_tasks: install_spar.yaml
