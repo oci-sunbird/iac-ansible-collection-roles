@@ -17,6 +17,7 @@ spec:
       passHostHeader: true
       port: 5000
       scheme: http
-  # tls:                           
-  #   domains:                   
-  #   - main: hello.{{domain}}
+  tls:
+    secretName: traefik/wildcard-ssl-tls                           
+    domains:                   
+    - main: hello.{{domain}}

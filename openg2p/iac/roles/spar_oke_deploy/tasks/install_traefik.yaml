@@ -61,7 +61,7 @@
           asDefault: true
         websecure:
           tls:
-            enabled: false
+            enabled: true
       tlsStore:
         default:
           defaultCertificate:
