@@ -3,6 +3,45 @@
     name: traefik
     repo_url: https://traefik.github.io/charts
 
+- name: Create a k8s namespace
+  kubernetes.core.k8s:
+    name: "{{item}}"
+    api_version: v1
+    kind: Namespace
+    state: present
+  with_items:
+    - traefik
+
+- name: Upload ssl cert private key
+  copy:
+    src: "{{ ansible_ssl_cert_private_key_file }}"
+    dest: "/root/.ssh/ssl_cert_private_key.key"
+    mode: "0600"
+
+- name: Upload ssl cert file
+  copy:
+    src: "{{ ansible_ssl_cert_file }}"
+    dest: "/root/.ssh/ssl_cert.pem"
+    mode: "0600"
+
+- name: Create ssl secret for istio gateway
+  shell: |
+    kubectl -n traefik delete secret wildcard-ssl-tls
+    kubectl create secret tls wildcard-ssl-tls -n traefik \
+    --cert=/root/.ssh/ssl_cert.pem \
+    --key=/root/.ssh/ssl_cert_private_key.key
+
+- name: Remove ssl cert private key
+  ansible.builtin.file:
+    path: /root/.ssh/ssl_cert_private_key.key
+    state: absent
+
+- name: Remove ssl cert file
+  ansible.builtin.file:
+    path: /root/.ssh/ssl_cert.pem
+    state: absent
+
+
 - name: Install traefik
   kubernetes.core.helm:
     name: traefik
@@ -23,6 +62,10 @@
         websecure:
           tls:
             enabled: false
+      tlsStore:
+        default:
+          defaultCertificate:
+            secretName: wildcard-ssl-tls
       service:
         annotations: 
           oci.oraclecloud.com/load-balancer-type: "lb"
