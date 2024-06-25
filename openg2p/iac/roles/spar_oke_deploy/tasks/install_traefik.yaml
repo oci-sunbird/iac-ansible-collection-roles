@@ -27,8 +27,8 @@
           service.beta.kubernetes.io/oci-load-balancer-ssl-ports: "443"
           oci.oraclecloud.com/oci-network-security-groups: "{{nsg_lb_oke_k8s_cluster}}"
 
-- name: Wait for deployments in traefik namespace
-  shell: bash /root/check_deployment.sh traefik
+# - name: Wait for deployments in traefik namespace
+#   shell: bash /root/check_deployment.sh traefik
 
 
 - name: Copy ingress routes
