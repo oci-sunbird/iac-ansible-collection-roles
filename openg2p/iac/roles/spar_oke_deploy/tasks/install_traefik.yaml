@@ -14,6 +14,7 @@
       additionalArguments: 
         - "--providers.kubernetesingress=true"
         - "--entryPoints.web.forwardedHeaders.trustedIPs=10.244.0.0/16"
+        - "--entryPoints.web.proxyProtocol.trustedIPs=10.244.0.0/16,10.0.0.0/16"
         - "--log.level=DEBUG"
       service:
         annotations: 
