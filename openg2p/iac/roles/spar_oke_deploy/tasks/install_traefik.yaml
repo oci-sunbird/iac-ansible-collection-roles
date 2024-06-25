@@ -8,6 +8,7 @@
     name: traefik
     chart_ref: traefik/traefik
     release_namespace: traefik
+    chart_version: 28.3.0
     create_namespace: true
     update_repo_cache: true
     values:
