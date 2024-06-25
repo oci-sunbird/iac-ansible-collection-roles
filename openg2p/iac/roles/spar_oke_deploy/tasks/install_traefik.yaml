@@ -42,10 +42,10 @@
     dest: "/root/traefik/ingress.yaml"
     mode: '0755'
 
-# - name: Apply ingress routes
-#   shell: |
-#     kubectl apply -f /root/traefik/ingress_route.yaml
-
-- name: Apply ingress
+- name: Apply ingress routes
   shell: |
-    kubectl apply -f /root/traefik/ingress.yaml
+    kubectl apply -f /root/traefik/ingress_route.yaml
+
+# - name: Apply ingress
+#   shell: |
+#     kubectl apply -f /root/traefik/ingress.yaml
