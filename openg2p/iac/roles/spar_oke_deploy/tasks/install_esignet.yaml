@@ -6,3 +6,4 @@
 
 - name: Wait for deployments in esignet namespace
   shell: bash /root/check_deployment.sh esignet
+

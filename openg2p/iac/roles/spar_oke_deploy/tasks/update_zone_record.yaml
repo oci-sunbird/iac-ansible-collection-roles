@@ -71,6 +71,7 @@
     - kafka
     - pmp
     - smtp
+    - signup
     - compliance
     - odk
     - keymanager
