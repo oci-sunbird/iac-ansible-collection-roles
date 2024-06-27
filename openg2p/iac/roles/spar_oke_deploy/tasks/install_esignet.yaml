@@ -20,6 +20,12 @@
         esignetHostname: "esignet.{{domain}}"
         keycloakBaseUrl: 'https://keycloak-rancher.{{domain}}'
       mock-identity-system:
+        istio:
+          enabled: true
+          virtualservice:
+            enabled: true
+            host: "esignet.{{domain}}"
+            gateway: "{{default_istio_gateway}}"
         springConfig:
           names: application,mock-identity-system
           profile: default
