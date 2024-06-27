@@ -1,31 +1,60 @@
+# - name: Copy Deploy folder
+#   shell: cp -r /root/openg2p-deployment/kubernetes/ /root/openg2p/customization/
+
+
+# - name: "Update spar config"
+#   template:
+#     src: "spar/install.j2"
+#     dest: "/root/openg2p/customization/kubernetes/social-payments-account-registry/install.sh"
+#     mode: '0755'
+
+# - name: "Update spar helm values config"
+#   template:
+#     src: "spar/values.yaml.j2"
+#     dest: "/root/openg2p/customization/kubernetes/social-payments-account-registry/values.yaml"
+#     mode: '0755'
+
 # - name: Deploy SPAR
 #   shell: |
 #     export SANDBOX_HOSTNAME={{domain}}
-#     cd /root/openg2p-deployment/kubernetes/social-payments-account-registry
+#     cd /root/openg2p/customization/kubernetes/social-payments-account-registry
 #     ./install.sh
 
+# - name: Wait for deployments in spar namespace
+#   shell: bash /root/check_deployment.sh spar
 
-- name: Copy Deploy folder
-  shell: cp -r /root/openg2p-deployment/kubernetes/ /root/openg2p/customization/
 
 
-- name: "Update spar config"
-  template:
-    src: "spar/install.j2"
-    dest: "/root/openg2p/customization/kubernetes/social-payments-account-registry/install.sh"
-    mode: '0755'
-
-- name: "Update spar helm values config"
-  template:
-    src: "spar/values.yaml.j2"
-    dest: "/root/openg2p/customization/kubernetes/social-payments-account-registry/values.yaml"
-    mode: '0755'
-
-- name: Deploy SPAR
-  shell: |
-    export SANDBOX_HOSTNAME={{domain}}
-    cd /root/openg2p/customization/kubernetes/social-payments-account-registry
-    ./install.sh
-
-- name: Wait for deployments in spar namespace
-  shell: bash /root/check_deployment.sh spar
+- name: Install Spar
+  kubernetes.core.helm:
+    name: spar
+    chart_ref: openg2p/spar
+    release_namespace: spar
+    chart_version: 1.0.0
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      global:
+        hostname: "spar.{{domain}}"
+        esignetBaseUrl: "https://esignet.{{domain}}"
+      spar-self-service-ui:
+        istio:
+          enabled: true
+          virtualservice:
+            enabled: true
+            host: "spar.{{domain}}"
+            gateway: "{{default_istio_gateway}}"
+      spar-self-service-api:
+        istio:
+          enabled: true
+          virtualservice:
+            enabled: true
+            host: "spar.{{domain}}"
+            gateway: "{{default_istio_gateway}}"       
+      spar-mapper-api:
+        istio:
+          enabled: true
+          virtualservice:
+            enabled: true
+            host: "spar.{{domain}}"
+            gateway: "{{default_istio_gateway}}"    
