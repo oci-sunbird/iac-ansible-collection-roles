@@ -3,7 +3,7 @@
 # - include_tasks: install_istio_operator.yaml
 # - include_tasks: install_prometheus.yaml
 # - include_tasks: update_zone_record.yaml
-- include_tasks: install_postgres.yaml
+# - include_tasks: install_postgres.yaml
 - include_tasks: install_keycloak.yaml
 # - include_tasks: install_minio_object_store.yaml
 # - include_tasks: install_msg_gateway.yaml
