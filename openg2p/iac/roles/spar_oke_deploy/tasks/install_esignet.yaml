@@ -71,20 +71,6 @@
 
       postgresInit:
         envVars:
-          MOSIP_DB_NAME: mosip_esignet
-          DB_SERVERIP: '{{ tpl .Values.postgresqlInstallationName $ }}'
-          DB_PORT: '5432'
-          SU_USER: postgres
-          DB_USER: esignetuser
-          DML_FLAG: '1'
           GIT_REPO_URL: "{{mosip_esignet_repo}}"
           GIT_BRANCH: v1.4.0
-        envVarsFrom:
-          SU_USER_PWD:
-            secretKeyRef:
-              name: '{{ tpl .Values.postgresqlInstallationName $ }}'
-              key: postgres-password
-          DBUSER_PWD:
-            secretKeyRef:
-              name: '{{ tpl .Values.postgresqlInstallationName $ }}'
-              key: password
+

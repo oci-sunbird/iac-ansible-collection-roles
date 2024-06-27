@@ -1,7 +1,7 @@
 
 - include_tasks: common.yaml
-- include_tasks: install_istio_operator.yaml
-- include_tasks: install_prometheus.yaml
+# - include_tasks: install_istio_operator.yaml
+# - include_tasks: install_prometheus.yaml
 # - include_tasks: update_zone_record.yaml
 # - include_tasks: install_postgres.yaml
 # - include_tasks: install_keycloak.yaml
