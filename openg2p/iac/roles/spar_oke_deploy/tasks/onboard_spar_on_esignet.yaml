@@ -46,7 +46,7 @@
 - name: Update spar login provider
   shell: |
     cd /root/openg2p/customization/kubernetes/social-payments-account-registry/
-    kubectl -n postgres exec -i postgres-postgresql-0 -- bash -c 'export PGPASSWORD={{sparuser_password.stdout}} ; psql -U sparuser -d spardb -f -' < update_table.sql
+    kubectl -n spar exec -i spar-postgresql-0 -- bash -c 'export PGPASSWORD={{sparuser_password.stdout}} ; psql -U sparuser -d spardb -f -' < update_table.sql
 
 # - name: Dump result
 #   debug: 
