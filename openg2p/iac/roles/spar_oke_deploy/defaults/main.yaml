@@ -46,3 +46,6 @@ mosip_esignet_rel_version: v1.2.0
 
 mosip_mockidentitysystem_repo: https://github.com/oci-sunbird/esignet-mock-services.git
 mosip_mockidentitysystem_rel_version: v0.9.1
+
+openg2p_spar_self_service_repo: https://github.com/oci-sunbird/openg2p-spar-self-service
+openg2p_spar_self_service_rel_version: 1.0.0
