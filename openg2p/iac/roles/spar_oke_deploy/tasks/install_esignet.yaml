@@ -7,6 +7,12 @@
 # - name: Wait for deployments in esignet namespace
 #   shell: bash /root/check_deployment.sh esignet
 
+- name: Get openg2p_admin_client_secret
+  shell: |
+    openg2p_admin_client_secret=`kubectl get secret --namespace keycloak keycloak-client-secrets  -o go-template='{{ '{{' }}index .data "openg2p_admin_client_secret"|base64decode{{ '}}' }}'`
+    echo $openg2p_admin_client_secret
+  register: openg2p_admin_client_secret
+
 - name: Install Esignet
   kubernetes.core.helm:
     name: esignet
@@ -16,6 +22,13 @@
     create_namespace: true
     update_repo_cache: true
     values:
+      springConfig:
+        gitRepo:
+          enabled: true
+          repoUrl: "{{mosip_config_repo}}"
+          branch: esignet   
+      envVars:
+        mosip_ida_client_secret: "{{openg2p_admin_client_secret.stdout}}"     
       global:
         esignetHostname: "esignet.{{domain}}"
         keycloakBaseUrl: 'https://keycloak.{{domain}}'
