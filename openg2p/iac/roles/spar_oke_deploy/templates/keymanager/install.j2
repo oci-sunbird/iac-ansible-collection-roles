@@ -24,7 +24,7 @@ COPY_UTIL=../utils/copy_cm_func.sh
 export SANDBOX_HOSTNAME=${SANDBOX_HOSTNAME:-openg2p.sandbox.net}
 export KEYMANAGER_HOSTNAME=${KEYMANAGER_HOSTNAME:-$SANDBOX_HOSTNAME}
 
-helm repo add mosip https://mosip.github.io/mosip-helm
+helm repo add mosip {{mosip_helm_repo}}
 helm repo update
 
 echo Create namespaces

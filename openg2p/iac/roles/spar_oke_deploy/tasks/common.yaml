@@ -12,15 +12,15 @@
 
 - name: Clone OpenG2P Deployment Repo
   ansible.builtin.git:
-    repo: https://github.com/oci-sunbird/openg2p-deployment.git
+    repo: "{{openg2p_deployment_repo}}"
     dest: /root/openg2p-deployment
     single_branch: yes
     force: true
-    version: v1.1.1
+    version: "{{openg2p_rel_version}}"
 
 - name: Clone MOSIP infra Deployment Repo
   ansible.builtin.git:
-    repo: https://github.com/mosip/mosip-infra.git
+    repo: "{{mosip_infra_repo}}"
     dest: /root/mosip-infra
     single_branch: yes
     version: "{{mosip_rel_version}}"
@@ -28,13 +28,13 @@
 - name: Add a mosip helm repository
   kubernetes.core.helm_repository:
     name: mosip
-    repo_url: https://mosip.github.io/mosip-helm
+    repo_url: "{{mosip_helm_repo}}"
 
 
 - name: Add a openg2p helm repository
   kubernetes.core.helm_repository:
     name: openg2p
-    repo_url: https://openg2p.github.io/openg2p-helm
+    repo_url: "{{openg2p_helm_repo}}"
 
 
 - name: Create project directories

@@ -7,7 +7,7 @@ NS=odk
 # VERSION=1.2.0    ### Removed now from upstream charts
 # VERSION=v2024.1.0
 VERSION=1.1.0
-helm repo add openg2p https://openg2p.github.io/openg2p-helm
+helm repo add openg2p {{openg2p_helm_repo}}
 helm repo update
 
 echo Create $NS namespace
