@@ -46,6 +46,7 @@
             gateway: "{{default_istio_gateway}}"
       spar-self-service-api:
         postgresInit:
+          backoffLimit: 10
           envVars:
             GIT_REPO_URL: "{{openg2p_spar_self_service_repo}}"
             GIT_BRANCH: "{{openg2p_spar_self_service_rel_version}}"
