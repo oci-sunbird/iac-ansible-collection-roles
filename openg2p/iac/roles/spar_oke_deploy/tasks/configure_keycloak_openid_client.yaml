@@ -1,0 +1,124 @@
+- name: Get keycloak admin passord
+  shell: |
+    admin_password=`kubectl get secret --namespace keycloak keycloak -o go-template='{{ '{{' }}index .data "admin-password"|base64decode{{ '}}' }}'`
+    echo $admin_password
+  register: keycloak_admin_password
+
+# - name: Create or update a Keycloak client
+#   community.general.keycloak_client:
+#     auth_client_id: admin-cli
+#     auth_keycloak_url: https://keycloak-rancher.{{domain}}
+#     auth_realm: master
+#     auth_username: user
+#     auth_password: "{{keycloak_admin_password.stdout}}"
+#     state: present
+#     realm: master
+#     client_id: https://rancher.{{domain}}/v1-saml/keycloak/saml/metadata
+#     id: d8b127a3-31f6-44c8-a7e4-4ab9a3e78d95
+#     name: Rancher
+#     description: Rancher SAML Client
+#     enabled: true
+#     client_authenticator_type: client-secret
+#     secret: REALLYWELLKEPTSECRET
+#     redirect_uris:
+#       - https://rancher.{{domain}}/v1-saml/keycloak/saml/acs
+#     web_origins: []
+#     not_before: 0
+#     bearer_only: false
+#     consent_required: false
+#     standard_flow_enabled: true
+#     implicit_flow_enabled: false
+#     direct_access_grants_enabled: true
+#     service_accounts_enabled: false
+#     public_client: true
+#     frontchannel_logout: false
+#     protocol: saml
+#     full_scope_allowed: true
+#     node_re_registration_timeout: -1
+#     always_display_in_console: false
+#     surrogate_auth_required: false
+#     default_client_scopes:
+#       - role_list
+#     protocol_mappers:
+#       - config:
+#           attribute.name: member
+#           attribute.nameformat: Basic
+#           single: true
+#           full.path: true
+#         consentRequired: false
+#         name: groups
+#         protocol: saml
+#         protocolMapper: saml-group-membership-mapper
+#       - config:
+#           attribute.name: urn:oid:1.2.840.113549.1.9.1
+#           attribute.nameformat: urn:oasis:names:tc:SAML:2.0:attrname-format:uri
+#           friendly.name: email
+#           user.attribute: email
+#         consentRequired: false
+#         name: X500 email
+#         protocol: saml
+#         protocolMapper: saml-user-property-mapper
+#       - config:
+#           attribute.name: username
+#           attribute.nameformat: Basic
+#           friendly.name: username
+#           user.attribute: username
+#         consentRequired: false
+#         name: username
+#         protocol: saml
+#         protocolMapper: saml-user-property-mapper
+
+#       - config:
+#           attribute.name: Role
+#           attribute.nameformat: Basic
+#           single: false
+#         consentRequired: false
+#         name: role list
+#         protocol: saml
+#         protocolMapper: saml-role-list-mapper
+
+#       - config:
+#           attribute.name: urn:oid:2.5.4.42
+#           attribute.nameformat: urn:oasis:names:tc:SAML:2.0:attrname-format:uri
+#           friendly.name: givenName
+#           user.attribute: firstName
+#         consentRequired: false
+#         name: X500 givenName
+#         protocol: saml
+#         protocolMapper: saml-user-property-mapper
+
+#       - config:
+#           attribute.name: urn:oid:2.5.4.4
+#           attribute.nameformat: urn:oasis:names:tc:SAML:2.0:attrname-format:uri
+#           friendly.name: surname
+#           user.attribute: lastName
+#         consentRequired: false
+#         name: X500 surname
+#         protocol: saml
+#         protocolMapper: saml-user-property-mapper
+
+#     attributes:
+#         id.token.as.detached.signature: "false"
+#         saml.assertion.signature: "true"
+#         saml.server.signature: "false"
+#         saml.force.post.binding: "false"
+#         saml.multivalued.roles: "false"
+#         saml.encrypt: "false"
+#         oauth2.device.authorization.grant.enabled: "false"
+#         backchannel.logout.revoke.offline.tokens: "false"
+#         saml.server.signature.keyinfo.ext: "false"
+#         use.refresh.tokens: "false"
+#         exclude.session.state.from.auth.response: "false"
+#         oidc.ciba.grant.enabled: "false"
+#         saml.artifact.binding.identifier: "kjR7oZJj2adVpF8cSDlKdbEYsY4="
+#         saml.artifact.binding: "false"
+#         backchannel.logout.session.required: "false"
+#         client_credentials.use_refresh_token: "false"
+#         saml_force_name_id_format: "false"
+#         saml.client.signature: "false"
+#         tls.client.certificate.bound.access.tokens: "false"
+#         saml.authnstatement: "false"
+#         display.on.consent.screen: "false"
+#         saml.onetimeuse.condition: "false"
+#         saml_idp_initiated_sso_url_name: "IdPSSOName"
+    
