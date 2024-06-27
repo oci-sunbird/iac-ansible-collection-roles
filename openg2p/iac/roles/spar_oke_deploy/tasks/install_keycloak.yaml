@@ -19,7 +19,7 @@
   shell: |
     export SANDBOX_HOSTNAME={{domain}}
     export KEYCLOAK_ISTIO_ENABLED=true
-    export KEYCLOAK_INIT_ENABLED=true
+    export KEYCLOAK_INIT_ENABLED=false
     cd /root/openg2p/customization/kubernetes/keycloak
     ./install.sh
 
