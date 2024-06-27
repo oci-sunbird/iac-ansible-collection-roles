@@ -39,7 +39,7 @@
 
 - name: Get postgres spar user password
   shell: |
-    sparuser_password=`kubectl get secret --namespace postgres postgres-postgresql  -o go-template='{{ '{{' }}index .data "password"|base64decode{{ '}}' }}'`
+    sparuser_password=`kubectl get secret --namespace spar spar-postgresql  -o go-template='{{ '{{' }}index .data "password"|base64decode{{ '}}' }}'`
     echo $sparuser_password
   register: sparuser_password
 
