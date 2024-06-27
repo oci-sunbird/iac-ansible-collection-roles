@@ -8,13 +8,13 @@ databases:
 
   mosip_audit:
     enabled: true
-    repoUrl: https://github.com/mosip/audit-manager.git
-    branch: v1.2.0.1
+    repoUrl: {{mosip_audit_manager_repo}}
+    branch: {{mosip_audit_manager_rel_version}}
 
   mosip_keymgr:
     enabled: true 
-    repoUrl: https://github.com/mosip/keymanager.git
-    branch: v1.2.0.1-B3
+    repoUrl: {{mosip_keymanager_repo}}
+    branch: {{mosip_keymanager_rel_version}}
 
   mosip_kernel:
     enabled: false
@@ -74,10 +74,10 @@ databases:
 
   mosip_esignet:
     enabled: true
-    repoUrl: https://github.com/mosip/esignet.git
-    branch: v1.2.0
+    repoUrl: {{mosip_esignet_repo}}
+    branch: {{mosip_esignet_rel_version}}
 
   mosip_mockidentitysystem:
     enabled: true
-    repoUrl: https://github.com/mosip/esignet-mock-services.git
-    branch: v0.9.1
+    repoUrl: {{mosip_mockidentitysystem_repo}}
+    branch: {{mosip_mockidentitysystem_rel_version}}

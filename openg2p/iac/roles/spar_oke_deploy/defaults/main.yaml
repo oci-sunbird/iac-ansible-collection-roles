@@ -15,7 +15,34 @@ pre_reg_captcha_secret_key: dummy-secret-key
 resident_captcha_site_key: dummy-site-key
 resident_captcha_secret_key: dummy-secret-key
 
-mosip_rel_version: v1.2.0.1
+
 zone_compartment_id: "{{compartment_id}}"
 
 default_istio_gateway: "istio-system/all-hosts"
+
+
+### Repositories
+
+openg2p_deployment_repo: https://github.com/oci-sunbird/openg2p-deployment.git
+openg2p_rel_version: v1.1.1
+
+mosip_infra_repo: https://github.com/oci-sunbird/mosip-infra.git
+mosip_rel_version: v1.2.0.1
+
+mosip_helm_repo: https://oci-sunbird.github.io/mosip-helm
+openg2p_helm_repo: https://oci-sunbird.github.io/openg2p-helm
+
+mosip_config_repo: https://github.com/oci-sunbird/mosip-config
+mosip_config_rel_version: v.1.0.3
+
+mosip_audit_manager_repo: https://github.com/oci-sunbird/audit-manager.git
+mosip_audit_manager_rel_version: v1.2.0.1
+
+mosip_keymanager_repo: https://github.com/oci-sunbird/keymanager.git
+mosip_keymanager_rel_version: v1.2.0.1-B3
+
+mosip_esignet_repo: https://github.com/oci-sunbird/esignet.git
+mosip_esignet_rel_version: v1.2.0
+
+mosip_mockidentitysystem_repo: https://github.com/oci-sunbird/esignet-mock-services.git
+mosip_mockidentitysystem_rel_version: v0.9.1
