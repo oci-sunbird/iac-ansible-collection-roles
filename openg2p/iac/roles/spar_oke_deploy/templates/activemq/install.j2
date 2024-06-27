@@ -21,7 +21,7 @@ function create_namespace() {
 
 function installing_Activemq() {
   echo Updating repos
-  helm repo add mosip https://mosip.github.io/mosip-helm
+  helm repo add mosip {{mosip_helm_repo}}
   helm repo update
 
   echo Installing Activemq
