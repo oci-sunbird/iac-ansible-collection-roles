@@ -1,9 +1,90 @@
-- name: Deploy Esignet
-  shell: |
-    export SANDBOX_HOSTNAME={{domain}}
-    cd /root/openg2p-deployment/kubernetes/esignet
-    ./install.sh
+# - name: Deploy Esignet
+#   shell: |
+#     export SANDBOX_HOSTNAME={{domain}}
+#     cd /root/openg2p-deployment/kubernetes/esignet
+#     ./install.sh
 
-- name: Wait for deployments in esignet namespace
-  shell: bash /root/check_deployment.sh esignet
+# - name: Wait for deployments in esignet namespace
+#   shell: bash /root/check_deployment.sh esignet
 
+- name: Install Esignet
+  kubernetes.core.helm:
+    name: esignet
+    chart_ref: openg2p/esignet
+    release_namespace: esignet
+    chart_version: 1.4.0
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      global:
+        esignetHostname: "esignet.{{domain}}"
+        keycloakBaseUrl: 'https://keycloak-rancher.{{domain}}'
+      mock-identity-system:
+        springConfig:
+          names: application,mock-identity-system
+          profile: default
+          gitRepo:
+            enabled: true
+            repoUrl: "{{mosip_config_repo}}"
+            branch: master
+          rawConfig: ""
+      oidcUi:
+        enabled: true        
+        istio:
+          enabled: true
+          virtualservice:
+            enabled: true
+            host: "esignet.{{domain}}"
+            gateway: "{{default_istio_gateway}}"
+
+      istio:
+        enabled: true
+        virtualservice:
+          enabled: true
+          host: "esignet.{{domain}}"
+          gateway: "{{default_istio_gateway}}"
+      postgresql:
+        primary:
+          extendedConfiguration: |-
+            wal_level = logical
+            max_wal_senders = 20
+            max_replication_slots = 10
+            max_connections = 500
+          initdb:
+            scripts:
+              create_dbs_and_users.sh: |
+                  #!/bin/bash
+                  PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres -d postgres -c "CREATE ROLE odkuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '"$POSTGRES_PASSWORD"';"
+                  PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres -d postgres -c "CREATE ROLE keycloakuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '"$POSTGRES_PASSWORD"';"
+                  PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres -d postgres -c "CREATE ROLE sunbirdrcuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '"$POSTGRES_PASSWORD"';"
+                  PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres -d postgres -c "CREATE ROLE sparuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '"$POSTGRES_PASSWORD"';"
+                  PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres -d postgres -c "CREATE ROLE gctbuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '"$POSTGRES_PASSWORD"';"
+                  PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres -d postgres -c "CREATE ROLE mpesa WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '"$POSTGRES_PASSWORD"';"
+                  PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres -d postgres -c "CREATE ROLE socialregistryuser WITH LOGIN NOSUPERUSER CREATEDB CREATEROLE INHERIT REPLICATION CONNECTION LIMIT -1 PASSWORD '"$POSTGRES_PASSWORD"';"
+                  PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres -d postgres -c "CREATE DATABASE socialregistrydb WITH OWNER = socialregistryuser TEMPLATE = template0 ENCODING = 'UTF8' TABLESPACE = pg_default CONNECTION LIMIT = -1;"
+                  PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres -d postgres -c "CREATE DATABASE odkdb WITH OWNER = odkuser TEMPLATE = template0 ENCODING = 'UTF8' TABLESPACE = pg_default CONNECTION LIMIT = -1;"
+                  PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres -d postgres -c "CREATE DATABASE keycloakdb WITH OWNER = keycloakuser TEMPLATE = template0 ENCODING = 'UTF8' TABLESPACE = pg_default CONNECTION LIMIT = -1;"
+                  PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres -d postgres -c "CREATE DATABASE "'"spar-mapper-registry"'" WITH OWNER = sunbirdrcuser TEMPLATE = template0 ENCODING = 'UTF8' TABLESPACE = pg_default CONNECTION LIMIT = -1;"
+                  PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres -d postgres -c "CREATE DATABASE spardb WITH OWNER = sparuser TEMPLATE = template0 ENCODING = 'UTF8' TABLESPACE = pg_default CONNECTION LIMIT = -1;"
+                  PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres -d postgres -c "CREATE DATABASE gctbdb WITH OWNER = gctbuser TEMPLATE = template0 ENCODING = 'UTF8' TABLESPACE = pg_default CONNECTION LIMIT = -1;"
+                  PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres -d postgres -c "CREATE DATABASE mpesa WITH OWNER = mpesa TEMPLATE = template0 ENCODING = 'UTF8' TABLESPACE = pg_default CONNECTION LIMIT = -1;"      
+
+      postgresInit:
+        envVars:
+          MOSIP_DB_NAME: mosip_esignet
+          DB_SERVERIP: '{{ tpl .Values.postgresqlInstallationName $ }}'
+          DB_PORT: '5432'
+          SU_USER: postgres
+          DB_USER: esignetuser
+          DML_FLAG: '1'
+          GIT_REPO_URL: "{{mosip_esignet_repo}}"
+          GIT_BRANCH: v1.4.0
+        envVarsFrom:
+          SU_USER_PWD:
+            secretKeyRef:
+              name: '{{ tpl .Values.postgresqlInstallationName $ }}'
+              key: postgres-password
+          DBUSER_PWD:
+            secretKeyRef:
+              name: '{{ tpl .Values.postgresqlInstallationName $ }}'
+              key: password
