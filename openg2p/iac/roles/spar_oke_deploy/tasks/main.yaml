@@ -14,8 +14,8 @@
 # - include_tasks: install_activemq_artemis.yaml
 # - include_tasks: install_key_manager.yaml
 # - include_tasks: install_esignet.yaml
-- include_tasks: install_spar.yaml
-# - include_tasks: load_esignet_mock_data.yaml
+# - include_tasks: install_spar.yaml
+- include_tasks: load_esignet_mock_data.yaml
 # - include_tasks: onboard_spar_on_esignet.yaml
 
 
