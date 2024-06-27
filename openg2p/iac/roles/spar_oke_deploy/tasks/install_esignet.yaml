@@ -18,7 +18,7 @@
     values:
       global:
         esignetHostname: "esignet.{{domain}}"
-        keycloakBaseUrl: 'https://keycloak-rancher.{{domain}}'
+        keycloakBaseUrl: 'https://keycloak.{{domain}}'
       mock-identity-system:
         istio:
           enabled: true
@@ -32,7 +32,7 @@
           gitRepo:
             enabled: true
             repoUrl: "{{mosip_config_repo}}"
-            branch: master
+            branch: esignet
           rawConfig: ""
       oidcUi:
         enabled: true        
