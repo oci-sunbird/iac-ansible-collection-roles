@@ -34,6 +34,7 @@
         mosip_api_internal_host: "esignet.{{domain}}"
         mosip_api_public_host: "esignet.{{domain}}"
         mosip_signup_host: "esignet.{{domain}}"
+        mosip_mock_id_baseUrl: "esignet.{{domain}}"
         mosip_esignet_host: "esignet.{{domain}}" 
       global:
         esignetHostname: "esignet.{{domain}}"
