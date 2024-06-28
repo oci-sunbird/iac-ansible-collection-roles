@@ -30,7 +30,7 @@
           repoUrl: "{{mosip_config_repo}}"
           branch: "{{mosip_conig_esignet_branch}}"   
       envVars:
-        mosip_ida_client_secret: "{{openg2p_admin_client_secret.stdout}}"
+        openg2p_admin_client_secret: "{{openg2p_admin_client_secret.stdout}}"
         mosip_api_internal_host: "esignet.{{domain}}"
         mosip_api_public_host: "esignet.{{domain}}"
         mosip_signup_host: "esignet.{{domain}}"
