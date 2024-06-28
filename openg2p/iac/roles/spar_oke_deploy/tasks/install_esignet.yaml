@@ -26,7 +26,7 @@
         gitRepo:
           enabled: true
           repoUrl: "{{mosip_config_repo}}"
-          branch: esignet   
+          branch: "{{mosip_conig_esignet_branch}}"   
       envVars:
         mosip_ida_client_secret: "{{openg2p_admin_client_secret.stdout}}"
         mosip_api_internal_host: "esignet.{{domain}}"
@@ -49,7 +49,7 @@
           gitRepo:
             enabled: true
             repoUrl: "{{mosip_config_repo}}"
-            branch: esignet
+            branch: "{{mosip_conig_esignet_branch}}"
           rawConfig: ""
       oidcUi:
         enabled: true        
