@@ -49,7 +49,7 @@
           envVars:
             GIT_REPO_URL: "{{openg2p_spar_self_service_repo}}"
             GIT_BRANCH: "{{openg2p_spar_self_service_rel_version}}"
-            WAIT_BEFORE_STARTUP: 60s
+            WAIT_BEFORE_STARTUP: 120s
         istio:
           enabled: true
           virtualservice:
