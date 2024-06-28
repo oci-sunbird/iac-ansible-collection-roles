@@ -22,6 +22,8 @@
     create_namespace: true
     update_repo_cache: true
     values:
+      image: 
+        tag: 1.2.0
       springConfig:
         gitRepo:
           enabled: true
