@@ -24,7 +24,7 @@ spec:
       inter.broker.protocol.version: "3.7"
     storage:
       class: {{strimzi_storage_class}}
-      type: persistent-claim
+      type: jbod
       volumes:
       - id: 0
         class: {{strimzi_storage_class}}
