@@ -24,10 +24,6 @@
       grafana:
         testFramework:
           enabled: false
-        rbac:
-          create: false
-          pspEnabled: false
-          namespaced: true
         dashboardProviders:
           dashboardproviders.yaml:
             apiVersion: 1
@@ -48,7 +44,7 @@
                 type: prometheus
                 url: http://kube-prometheus-stack-prometheus.monitoring:9090/
                 access: proxy
-                isDefault: true
+                isDefault: false
         dashboards:
           default:
             server-general-github:
