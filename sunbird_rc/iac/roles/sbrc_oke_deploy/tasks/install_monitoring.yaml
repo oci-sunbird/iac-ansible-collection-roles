@@ -42,7 +42,7 @@
             datasources:
               - name: TemporalMetrics
                 type: prometheus
-                url: http://kube-prometheus-stack-prometheus
+                url: http://kube-prometheus-stack-prometheus.monitoring:9090
                 access: proxy
                 isDefault: false
         dashboards:
