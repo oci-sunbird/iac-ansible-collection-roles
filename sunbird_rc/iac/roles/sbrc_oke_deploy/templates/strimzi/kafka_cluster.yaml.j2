@@ -27,6 +27,7 @@ spec:
       type: persistent-claim
       volumes:
       - id: 0
+        class: {{strimzi_storage_class}}
         type: persistent-claim
         size: 1Gi
         deleteClaim: true
