@@ -50,6 +50,10 @@ spec:
         configMapKeyRef:
           name: kafka-metrics
           key: zookeeper-metrics-config.yml
+  kafkaExporter:
+    topicRegex: ".*"
+    groupRegex: ".*"
+    
   entityOperator:
     topicOperator: 
       reconciliationIntervalMs: 60000
