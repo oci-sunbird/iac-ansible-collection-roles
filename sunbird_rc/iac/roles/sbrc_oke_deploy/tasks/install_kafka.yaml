@@ -12,4 +12,6 @@
     create_namespace: true
     update_repo_cache: true
 
+- name: Wait for deployments in strimzi namespace
+  shell: bash /root/check_deployment.sh strimzi
 
