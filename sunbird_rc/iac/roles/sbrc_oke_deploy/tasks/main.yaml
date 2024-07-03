@@ -1,5 +1,5 @@
 
-- include_tasks: common.yaml
+# - include_tasks: common.yaml
 # - include_tasks: install_certmanager.yaml
 # - include_tasks: install_istio_operator.yaml
 # - include_tasks: install_longhorn.yaml
