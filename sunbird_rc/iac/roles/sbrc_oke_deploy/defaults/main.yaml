@@ -9,6 +9,7 @@ claims_ms_db_url: jdbc:postgresql://{{postgress_db_host}}:5432/registry
 registry_db_url: jdbc:postgresql://{{postgress_db_host}}:5432/registry
 elastic_search_storage_class: longhorn
 filestorage_storage_class: longhorn
+strimzi_storage_class: longhorn
 elastic_search_storage_size: 1Gi
 filestorage_storage_size: 1Gi
 certificate_email: user@yopmail.com

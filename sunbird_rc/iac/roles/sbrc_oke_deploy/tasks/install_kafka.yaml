@@ -1,7 +1,10 @@
-# - name: Add a strimzi helm repository
-#   kubernetes.core.helm_repository:
-#     name: strimzi
-#     repo_url: https://strimzi.io/charts
+- name: Create project directories
+  file:
+    path: "{{item}}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - /root/sunbird-rc/customization/strimzi
 
 - name: Install strimzi
   kubernetes.core.helm:
@@ -12,6 +15,23 @@
     create_namespace: true
     update_repo_cache: true
 
-- name: Wait for deployments in strimzi namespace
-  shell: bash /root/check_deployment.sh strimzi
+# - name: Wait for deployments in strimzi namespace
+#   shell: bash /root/check_deployment.sh strimzi
+
+- name: "Update templates"
+  template:
+    src: "strimzi/{{item}}.j2"
+    dest: "/root/sunbird-rc/customization/strimzi/{{item}}"
+    mode: '0755'
+  with_items:
+    - kafka_cluster.yaml
+
+
+- name: Create k8s objects for strimzi
+  kubernetes.core.k8s:
+    namespace: strimzi
+    state: present
+    src: /root/sunbird-rc/customization/strimzi/{{item}}
+  with_items:
+    - kafka_cluster.yaml
 
