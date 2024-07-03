@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: temporalgrafana
+spec:
+  gateways:
+    - istio-system/all-hosts
+  hosts:
+    - temporal-grafana.{{domain}}
+  http:
+    - route:
+        - destination:
+            host: kube-prometheus-stack-grafana
+            port:
+              number: 80
+      headers:
+        request:
+          set:
+            x-forwarded-proto: https

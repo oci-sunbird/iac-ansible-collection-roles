@@ -75,3 +75,21 @@
 
 - name: Wait for deployments in monitoring namespace
   shell: bash /root/check_deployment.sh monitoring
+
+
+- name: "Update templates"
+  template:
+    src: "monitoring/{{item}}.j2"
+    dest: "/root/sunbird-rc/customization/monitoring/{{item}}"
+    mode: '0755'
+  with_items:
+    - vs_grafana.yaml
+
+
+- name: Create k8s objects for monitoring
+  kubernetes.core.k8s:
+    namespace: monitoring
+    state: present
+    src: /root/sunbird-rc/customization/monitoring/{{item}}
+  with_items:
+    - vs_grafana.yaml
