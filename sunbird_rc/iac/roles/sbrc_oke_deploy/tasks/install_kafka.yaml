@@ -1,12 +1,12 @@
-- name: Add a strimzi helm repository
-  kubernetes.core.helm_repository:
-    name: strimzi
-    repo_url: https://strimzi.io/charts
+# - name: Add a strimzi helm repository
+#   kubernetes.core.helm_repository:
+#     name: strimzi
+#     repo_url: https://strimzi.io/charts
 
 - name: Install strimzi
   kubernetes.core.helm:
-    name: strimzi
-    chart_ref: strimzi/strimzi-kafka-operator
+    name: strimzi-cluster-operator
+    chart_repo_url: oci://quay.io/strimzi-helm/strimzi-kafka-operator
     chart_version: 0.41.0
     release_namespace: strimzi
     create_namespace: true
