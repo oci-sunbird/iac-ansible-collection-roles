@@ -50,4 +50,14 @@ spec:
           logger.toc.name: io.strimzi.operator.topic.TopicOperator
           logger.toc.level: INFO 
           logger.clients.level: INFO 
-    userOperator: {}
+    userOperator:
+      reconciliationIntervalMs: 60000
+      logging:
+        type: inline
+        loggers:
+          rootLogger.level: INFO
+          logger.uop.name: io.strimzi.operator.user 
+          logger.uop.level: INFO 
+          logger.abstractcache.name: io.strimzi.operator.user.operator.cache.AbstractCache 
+          logger.abstractcache.level: INFO 
+          logger.jetty.level: DEBUG 
