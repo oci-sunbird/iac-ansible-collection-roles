@@ -1,0 +1,77 @@
+- name: Create project directories
+  file:
+    path: "{{item}}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - /root/sunbird-rc/customization/monitoring
+
+
+- name: Add a prometheus-community helm repository
+  kubernetes.core.helm_repository:
+    name: prometheus-community
+    repo_url: https://prometheus-community.github.io/helm-charts
+
+- name: Install kube-prometheus-stack
+  kubernetes.core.helm:
+    name: kube-prometheus-stack
+    chart_ref: prometheus-community/kube-prometheus-stack
+    chart_version: 61.1.1
+    release_namespace: monitoring
+    create_namespace: true
+    update_repo_cache: true
+    values:
+      grafana:
+        testFramework:
+          enabled: false
+        dashboardProviders:
+          dashboardproviders.yaml:
+            apiVersion: 1
+            providers:
+              - name: "default"
+                orgId: 1
+                folder: ""
+                type: file
+                disableDeletion: false
+                editable: true
+                options:
+                  path: /var/lib/grafana/dashboards/default
+        datasources:
+          datasources.yaml:
+            apiVersion: 1
+            datasources:
+              - name: TemporalMetrics
+                type: prometheus
+                url: http://kube-prometheus-stack-prometheus-server
+                access: proxy
+                isDefault: true
+        dashboards:
+          default:
+            server-general-github:
+              url: https://raw.githubusercontent.com/temporalio/dashboards/helm/server/server-general.json
+              datasource: TemporalMetrics
+            sdk-general-github:
+              url: https://raw.githubusercontent.com/temporalio/dashboards/helm/sdk/sdk-general.json
+              datasource: TemporalMetrics
+            misc-advanced-visibility-specific-github:
+              url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/advanced-visibility-specific.json
+              datasource: TemporalMetrics
+            misc-clustermonitoring-kubernetes-github:
+              url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/clustermonitoring-kubernetes.json
+              datasource: TemporalMetrics
+            misc-frontend-service-specific-github:
+              url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/frontend-service-specific.json
+              datasource: TemporalMetrics
+            misc-history-service-specific-github:
+              url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/history-service-specific.json
+              datasource: TemporalMetrics
+            misc-matching-service-specific-github:
+              url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/matching-service-specific.json
+              datasource: TemporalMetrics
+            misc-worker-service-specific-github:
+              url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/worker-service-specific.json
+              datasource: TemporalMetrics
+
+
+- name: Wait for deployments in monitoring namespace
+  shell: bash /root/check_deployment.sh monitoring
