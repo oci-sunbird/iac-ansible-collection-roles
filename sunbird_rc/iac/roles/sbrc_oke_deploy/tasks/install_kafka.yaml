@@ -6,7 +6,7 @@
 - name: Install strimzi
   kubernetes.core.helm:
     name: strimzi-cluster-operator
-    chart_repo_url: oci://quay.io/strimzi-helm/strimzi-kafka-operator
+    chart_ref: oci://quay.io/strimzi-helm/strimzi-kafka-operator
     chart_version: 0.41.0
     release_namespace: strimzi
     create_namespace: true
