@@ -10,9 +10,9 @@ spec:
   http:
     - route:
         - destination:
-            host: kube-prometheus-stack-grafana
+            host: kube-prometheus-stack-prometheus
             port:
-              number: 80
+              number: 9090
       headers:
         request:
           set:
