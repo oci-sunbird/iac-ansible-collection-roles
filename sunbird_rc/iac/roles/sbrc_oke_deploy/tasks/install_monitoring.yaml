@@ -21,10 +21,8 @@
     create_namespace: true
     update_repo_cache: true
     values:
-      serviceMonitorNamespaceSelector:
-        any: true
-      serviceMonitorSelector: {}
-      serviceMonitorSelectorNilUsesHelmValues: false
+      serviceMonitorSelector: 
+        app.kubernetes.io/name: temporal
       grafana:
         testFramework:
           enabled: false
