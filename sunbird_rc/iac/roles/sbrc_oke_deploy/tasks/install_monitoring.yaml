@@ -36,41 +36,41 @@
                 editable: true
                 options:
                   path: /var/lib/grafana/dashboards/default
-        datasources:
-          datasources.yaml:
-            apiVersion: 1
-            datasources:
-              - name: TemporalMetrics
-                type: prometheus
-                url: http://kube-prometheus-stack-prometheus.monitoring:9090/
-                access: proxy
-                isDefault: false
+        # datasources:
+        #   datasources.yaml:
+        #     apiVersion: 1
+        #     datasources:
+        #       - name: TemporalMetrics
+        #         type: prometheus
+        #         url: http://kube-prometheus-stack-prometheus.monitoring:9090/
+        #         access: proxy
+        #         isDefault: false
         dashboards:
           default:
             server-general-github:
               url: https://raw.githubusercontent.com/temporalio/dashboards/helm/server/server-general.json
-              datasource: TemporalMetrics
+              datasource: Prometheus
             sdk-general-github:
               url: https://raw.githubusercontent.com/temporalio/dashboards/helm/sdk/sdk-general.json
-              datasource: TemporalMetrics
+              datasource: Prometheus
             misc-advanced-visibility-specific-github:
               url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/advanced-visibility-specific.json
-              datasource: TemporalMetrics
+              datasource: Prometheus
             misc-clustermonitoring-kubernetes-github:
               url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/clustermonitoring-kubernetes.json
-              datasource: TemporalMetrics
+              datasource: Prometheus
             misc-frontend-service-specific-github:
               url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/frontend-service-specific.json
-              datasource: TemporalMetrics
+              datasource: Prometheus
             misc-history-service-specific-github:
               url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/history-service-specific.json
-              datasource: TemporalMetrics
+              datasource: Prometheus
             misc-matching-service-specific-github:
               url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/matching-service-specific.json
-              datasource: TemporalMetrics
+              datasource: Prometheus
             misc-worker-service-specific-github:
               url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/worker-service-specific.json
-              datasource: TemporalMetrics
+              datasource: Prometheus
 
 
 - name: Wait for deployments in monitoring namespace
