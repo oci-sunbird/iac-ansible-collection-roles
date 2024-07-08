@@ -21,8 +21,9 @@
     create_namespace: true
     update_repo_cache: true
     values:
-      serviceMonitorSelector: 
-        app.kubernetes.io/name: temporal
+      prometheusSpec:
+        serviceMonitorSelector: 
+          app.kubernetes.io/name: temporal
       grafana:
         testFramework:
           enabled: false
