@@ -21,7 +21,10 @@
     create_namespace: true
     update_repo_cache: true
     values:
-      ignoreNamespaceSelectors: true
+      serviceMonitorNamespaceSelector:
+        any: true
+      serviceMonitorSelector: {}
+      serviceMonitorSelectorNilUsesHelmValues: false
       grafana:
         testFramework:
           enabled: false
