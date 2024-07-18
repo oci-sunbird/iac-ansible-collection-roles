@@ -49,13 +49,13 @@
       - postgresql
 
 - name: Install kubernetes pre requisites
-  pip3:
+  ansible.builtin.pip:
     name: 
       - kubernetes
       - psycopg2
 
 - name: Install oci sdk
-  pip3:
+  ansible.builtin.pip:
     name: 
       - pyOpenSSL
       - oci
