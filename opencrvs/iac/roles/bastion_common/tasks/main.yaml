@@ -48,11 +48,11 @@
       - libpq-dev
       - postgresql
 
-- name: Install kubernetes pre requisites
-  pip:
-    name: 
-      - kubernetes
-      - psycopg2
+# - name: Install kubernetes pre requisites
+#   pip:
+#     name: 
+#       - kubernetes
+#       - psycopg2
 
 - name: Install oci sdk
   pip:
