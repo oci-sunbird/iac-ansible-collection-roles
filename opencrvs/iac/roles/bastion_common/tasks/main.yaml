@@ -30,19 +30,24 @@
 #     dest: "/root/.oci/bastion.key"
 #     mode: "0600"
 
-- name: Install oci cli
-  shell: |
-    wget -q https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh -O /root/install.sh
-    chmod +x /root/install.sh
-    /root/install.sh --accept-all-defaults
-    rm  /root/install.sh
-    cp /root/bin/oci /usr/local/bin/
+# - name: Install oci cli
+#   shell: |
+#     wget -q https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh -O /root/install.sh
+#     chmod +x /root/install.sh
+#     /root/install.sh --accept-all-defaults
+#     rm  /root/install.sh
+#     cp /root/bin/oci /usr/local/bin/
 
 - name: Install Pip3
   apt:
     name: python3-pip
     update_cache: yes
 
+
+- name: Install oci cli
+  ansible.builtin.pip:
+    name: 
+      - oci-cli
 
 - name: Install dependencies
   package:
