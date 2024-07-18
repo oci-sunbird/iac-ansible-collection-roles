@@ -49,13 +49,13 @@
       - postgresql
 
 - name: Install kubernetes pre requisites
-  pip:
+  pip3:
     name: 
       - kubernetes
       - psycopg2
 
 - name: Install oci sdk
-  pip:
+  pip3:
     name: 
       - pyOpenSSL
       - oci
