@@ -1,0 +1,4 @@
+- hosts: bastion
+  become: true
+  roles:
+    - opencrvs.iac.oci_cleanup
