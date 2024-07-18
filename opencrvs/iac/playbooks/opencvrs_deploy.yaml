@@ -4,5 +4,4 @@
     KUBECONFIG: "/root/.kube/oke_k8s_config"
   roles:
     - opencrvs.iac.bastion_common
-    - opencrvs.iac.oke_common
-    - opencrvs.iac.usct_deploy
+    # - opencrvs.iac.oke_common
