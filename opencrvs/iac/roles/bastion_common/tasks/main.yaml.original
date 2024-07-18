@@ -1,33 +1,74 @@
 - name: Update apt cache
   apt:
     update_cache: yes
-  become: true
 
 - name: Install dependencies
   package:
     name:
       - python3
-      - python3-pip
-      - curl
-      - libpq-dev
-      - postgresql
-      - git
-  become: true
 
 - name: Ignore PEP 668 because it's silly.
   ansible.builtin.file:
     path: /usr/lib/python3.12/EXTERNALLY-MANAGED
     state: absent
-  become: true
 
-- name: Install pip packages
+# - name: Create oci cli config directory
+#   file:
+#     path: "/root/.oci/"
+#     state: directory
+#     mode: '0755'
+
+# - name: "Create oci cli config"
+#   template:
+#     src: "oci_cli_config.j2"
+#     dest: "/root/.oci/config"
+#     mode: "0600"
+
+# - name: Upload bastion user api key
+#   copy:
+#     src: "{{ ansible_bastion_iam_private_key_file }}"
+#     dest: "/root/.oci/bastion.key"
+#     mode: "0600"
+
+# - name: Install oci cli
+#   shell: |
+#     wget -q https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh -O /root/install.sh
+#     chmod +x /root/install.sh
+#     /root/install.sh --accept-all-defaults
+#     rm  /root/install.sh
+#     cp /root/bin/oci /usr/local/bin/
+
+- name: Install Pip3
+  apt:
+    name: python3-pip
+    update_cache: yes
+
+
+- name: Install oci cli
+  ansible.builtin.pip:
+    name: 
+      - oci-cli
+
+- name: Install dependencies
+  package:
+    name:
+      - python3
+      - curl
+      - libpq-dev
+      - postgresql
+      - git
+
+- name: Install kubernetes pre requisites
   ansible.builtin.pip:
     name: 
       - kubernetes
       - psycopg2
+
+- name: Install oci sdk
+  ansible.builtin.pip:
+    name: 
       - pyOpenSSL
       - oci
-      - oci-cli
 
 - name: Remove OpenSSL python packages
   shell: |
