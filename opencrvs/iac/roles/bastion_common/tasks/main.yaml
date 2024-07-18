@@ -26,13 +26,13 @@
 #     dest: "/root/.oci/bastion.key"
 #     mode: "0600"
 
-# - name: Install oci cli
-#   shell: |
-#     wget -q https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh -O /root/install.sh
-#     chmod +x /root/install.sh
-#     /root/install.sh --accept-all-defaults
-#     rm  /root/install.sh
-#     cp /root/bin/oci /usr/local/bin/
+- name: Install oci cli
+  shell: |
+    wget -q https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh -O /root/install.sh
+    chmod +x /root/install.sh
+    /root/install.sh --accept-all-defaults
+    rm  /root/install.sh
+    cp /root/bin/oci /usr/local/bin/
 
 - name: Install Pip3
   apt:
@@ -48,17 +48,17 @@
       - libpq-dev
       - postgresql
 
-# - name: Install kubernetes pre requisites
-#   pip:
-#     name: 
-#       - kubernetes
-#       - psycopg2
+- name: Install kubernetes pre requisites
+  pip:
+    name: 
+      - kubernetes
+      - psycopg2
 
-# - name: Install oci sdk
-#   pip:
-#     name: 
-#       - pyOpenSSL
-#       - oci
+- name: Install oci sdk
+  pip:
+    name: 
+      - pyOpenSSL
+      - oci
 
 - name: Remove OpenSSL python packages
   shell: |
