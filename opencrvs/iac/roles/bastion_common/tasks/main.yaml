@@ -54,11 +54,11 @@
 #       - kubernetes
 #       - psycopg2
 
-- name: Install oci sdk
-  pip:
-    name: 
-      - pyOpenSSL
-      - oci
+# - name: Install oci sdk
+#   pip:
+#     name: 
+#       - pyOpenSSL
+#       - oci
 
 - name: Remove OpenSSL python packages
   shell: |
