@@ -2,6 +2,12 @@
   apt:
     update_cache: yes
 
+- name: Install dependencies
+  package:
+    name:
+      - python3
+
+
 # - name: Create oci cli config directory
 #   file:
 #     path: "/root/.oci/"
@@ -27,7 +33,6 @@
 #     /root/install.sh --accept-all-defaults
 #     rm  /root/install.sh
 #     cp /root/bin/oci /usr/local/bin/
-
 
 - name: Install Pip3
   apt:
