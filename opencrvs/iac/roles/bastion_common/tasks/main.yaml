@@ -74,6 +74,10 @@
     rm -R /usr/lib/python3/dist-packages/OpenSSL
     pip3 install pyOpenSSL --upgrade
 
+- name: Install NVM
+  shell: |
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+
 # - name: set environment values
 #   blockinfile:
 #     path: /root/.bashrc
