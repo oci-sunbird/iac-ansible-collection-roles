@@ -80,6 +80,7 @@
 
 - name: Install Node
   shell: |
+    source ~/.bashrc
     nvm install {{node_version}}
 
 # - name: set environment values
