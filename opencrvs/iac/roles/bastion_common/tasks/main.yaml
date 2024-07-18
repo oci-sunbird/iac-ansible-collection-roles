@@ -78,6 +78,10 @@
   shell: |
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
 
+- name: Install Node
+  shell: |
+    nvm install {{node_version}}
+
 # - name: set environment values
 #   blockinfile:
 #     path: /root/.bashrc
