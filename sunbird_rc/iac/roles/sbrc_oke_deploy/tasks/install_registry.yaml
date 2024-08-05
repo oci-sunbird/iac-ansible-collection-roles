@@ -13,6 +13,7 @@
         connectionInfo_password: "{{postgres_connectionInfo_password}}"
         sunbird_sso_admin_client_secret: "{{sbrc_keycloak_admin_api_secret}}"
         filestorage_secret_key: "{{filestorage_root_password}}"
+        logging.level.root: "DEBUG"
 
 - name: Wait for deployments in sunbird-rc namespace
   shell: bash /root/check_deployment.sh sunbird-rc
