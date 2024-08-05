@@ -15,7 +15,7 @@
         PROXY_ADDRESS_FORWARDING: 'true'
         KC_PROXY: edge
         KEYCLOAK_IMPORT: /opt/jboss/keycloak/imports/realm-export.json
-        DOMAIN_NAME: "sbrciam.{{domain}}"
+        DOMAIN_NAME: "sbrc.{{domain}}"
         ADMIN_API_SECRET: "{{sbrc_keycloak_admin_api_secret}}"
 
 - name: Wait for deployments in sunbird-rc namespace

@@ -6,7 +6,7 @@ spec:
   gateways:
     - istio-system/all-hosts
   hosts:
-    - sbrciam.{{domain}}
+    - sbrc.{{domain}}
   http:
     - route:
         - destination:
@@ -17,3 +17,6 @@ spec:
         request:
           set:
             x-forwarded-proto: https
+      match:
+      - uri:
+          prefix: /auth
