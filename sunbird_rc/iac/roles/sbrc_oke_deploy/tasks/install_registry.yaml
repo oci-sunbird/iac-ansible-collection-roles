@@ -6,7 +6,7 @@
     create_namespace: true
     update_repo_cache: true
     values:
-      image_tag: v2.0.0
+      image_tag: v0.0.13
       rccoreenv:
         connectionInfo_uri: "{{registry_db_url}}"
         connectionInfo_username: "{{postgres_connectionInfo_username}}"
