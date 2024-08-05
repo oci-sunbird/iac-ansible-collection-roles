@@ -12,8 +12,6 @@
     values:
       global:
         host: "sbrc.{{domain}}"
-        sunbird: 
-          enable_auth: true 
         secrets:
           VAULT_SECRET_TOKEN: "{{vault_root_token |b64encode }}"
           DB_URL: "{{db_url |b64encode}}"
