@@ -13,7 +13,7 @@
 # - include_tasks: install_claim_ms.yaml
 # - include_tasks: install_elasticsearch.yaml
 # - include_tasks: install_filestorage.yaml
-- include_tasks: install_keycloak.yaml
-# - include_tasks: install_registry.yaml
+# - include_tasks: install_keycloak.yaml
+- include_tasks: install_registry.yaml
 # - include_tasks: install_kafka.yaml
 # - include_tasks: install_monitoring.yaml
