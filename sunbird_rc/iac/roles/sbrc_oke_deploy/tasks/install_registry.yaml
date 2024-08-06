@@ -20,7 +20,9 @@
         workflow.enable: 'true'
         claims_enabled: true
         signature_enabled: true
-        did_enabled: False
+        did_enabled: true
+        credential_did_method: rcw
+        issuer_did_method : issuer
         did_health_check_url: http://identity-identity-service:3332/health 
         did_generate_url: http://identity-identity-service:3332/did/generate  
         did_resolve_url: http://identity-identity-service:3332/did/resolve  
