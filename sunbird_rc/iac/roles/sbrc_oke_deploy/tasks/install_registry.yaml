@@ -19,8 +19,8 @@
         oauth2_resource_uri: https://sbrciam.{{domain}}/auth/realms/sunbird-rc
         workflow.enable: 'true'
         claims_enabled: true
-        signature_enabled: true
-        did_enabled: true
+        # signature_enabled: true
+        # did_enabled: true
         # credential_did_method: rcw
         # issuer_did_method : issuer
         # schema_author: Registry
