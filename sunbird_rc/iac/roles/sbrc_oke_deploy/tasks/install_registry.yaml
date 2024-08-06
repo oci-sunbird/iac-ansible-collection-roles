@@ -16,6 +16,7 @@
         logging.level.root: "DEBUG"
         sunbird_sso_url: https://sbrc.{{domain}}/auth
         oauth2_resource_uri: https://sbrc.{{domain}}/auth/realms/sunbird-rc
+        workflow.enable: 'true'
 
 - name: Wait for deployments in sunbird-rc namespace
   shell: bash /root/check_deployment.sh sunbird-rc
