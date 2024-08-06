@@ -29,3 +29,17 @@
 
 - name: Create keycloak virtual service
   shell: kubectl -n sunbird-rc apply -f /root/sunbird-rc/customization/keycloak/keycloak-virtual-service.yaml
+
+
+
+- name: "Update keycloak create admin user script"
+  template:
+    src: "keycloak/create_admin_user.sh.j2"
+    dest: "/root/sunbird-rc/customization/keycloak/create_admin_user.sh"
+
+- name: Create admin user for token generation
+  shell: |
+    cd /root/sunbird-rc/customization/keycloak/
+    keycloack_pod_name=$(kubectl -n sunbird-rc get pods | grep keycloak | awk '{print $1}')
+    kubectl -n sunbird-rc cp create_admin_user.sh ${keycloack_pod_name}:/tmp/create_admin_user.sh
+    kubectl -n sunbird-rc exec -it ${keycloack_pod_name} -- /bin/bash -c "chmod +x /tmp/create_user.sh && /tmp/create_user.sh"
