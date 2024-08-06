@@ -9,8 +9,8 @@
       certificatesignenv:
         # CERTIFICATE_PUBLIC_KEY: "{{sbrc_certificate_public_key}}"
         # CERTIFICATE_PRIVATE_KEY: "{{sbrc_certificate_private_key}}"
-        CERTIFICATE_PUBLIC_KEY: "{{ sbrc_certificate_public_key | b64decode }}"       
-        CERTIFICATE_PRIVATE_KEY: "{{ sbrc_certificate_private_key | b64decode }}"
+        CERTIFICATE_PUBLIC_KEY: "{{ sbrc_certificate_public_key }}"       
+        CERTIFICATE_PRIVATE_KEY: "{{ sbrc_certificate_private_key }}"
 
 
 - name: Wait for deployments in sunbird-rc namespace
