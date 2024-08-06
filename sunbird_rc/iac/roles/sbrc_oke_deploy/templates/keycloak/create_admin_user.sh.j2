@@ -1,0 +1,4 @@
+/opt/jboss/keycloak/bin/kcadm.sh config credentials --server http://keycloak:8080/auth --realm master --user admin --password {{sbrc_keycloak_admin_password}} 
+/opt/jboss/keycloak/bin/kcadm.sh create users -s username=admin -s enabled=true -r sunbird-rc 
+/opt/jboss/keycloak/bin/kcadm.sh set-password -r sunbird-rc --username admin --new-password admin
+/opt/jboss/keycloak/bin/kcadm.sh  add-roles --uusername  admin --rolename admin -r sunbird-rc
