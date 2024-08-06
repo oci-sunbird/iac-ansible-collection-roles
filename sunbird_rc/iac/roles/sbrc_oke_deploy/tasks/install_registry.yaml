@@ -6,12 +6,17 @@
     create_namespace: true
     update_repo_cache: true
     values:
+      image_tag: v2.0.0
       rccoreenv:
         connectionInfo_uri: "{{registry_db_url}}"
         connectionInfo_username: "{{postgres_connectionInfo_username}}"
         connectionInfo_password: "{{postgres_connectionInfo_password}}"
         sunbird_sso_admin_client_secret: "{{sbrc_keycloak_admin_api_secret}}"
+        filestorage_enabled: true
         filestorage_secret_key: "{{filestorage_root_password}}"
+        sunbird_sso_url: https://sbrc.{{domain}}/auth
+        oauth2_resource_uri: https://sbrc.{{domain}}/auth/realms/sunbird-rc
+        workflow.enable: 'true'
 
 - name: Wait for deployments in sunbird-rc namespace
   shell: bash /root/check_deployment.sh sunbird-rc
