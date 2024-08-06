@@ -1,11 +1,11 @@
 
 - include_tasks: common.yaml
-- include_tasks: install_certmanager.yaml
-- include_tasks: install_istio_operator.yaml
-- include_tasks: install_longhorn.yaml
-- include_tasks: install_postgres.yaml
-- include_tasks: install_reloader.yaml
-- include_tasks: update_zone_record.yaml
+# - include_tasks: install_certmanager.yaml
+# - include_tasks: install_istio_operator.yaml
+# - include_tasks: install_longhorn.yaml
+# - include_tasks: install_postgres.yaml
+# - include_tasks: install_reloader.yaml
+# - include_tasks: update_zone_record.yaml
 - include_tasks: install_certificateapi.yaml
 - include_tasks: install_certificatesign.yaml
 - include_tasks: install_vault.yaml

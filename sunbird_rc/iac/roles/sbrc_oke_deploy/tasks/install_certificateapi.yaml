@@ -10,9 +10,9 @@
         # CERTIFICATE_PUBLIC_KEY: "{{sbrc_certificate_public_key}}"
         # CERTIFICATE_PRIVATE_KEY: "{{sbrc_certificate_private_key}}"
         CERTIFICATE_PUBLIC_KEY: |- 
-          {{ sbrc_certificate_public_key | b64decode| default("''") | indent(width=4) }}
+          {{ sbrc_certificate_public_key | b64decode }}
         CERTIFICATE_PRIVATE_KEY: |-
-          {{ sbrc_certificate_private_key | b64decode | default("''") | indent(width=4) }}
+          {{ sbrc_certificate_private_key | b64decode }}
 
 - name: Wait for deployments in sunbird-rc namespace
   shell: bash /root/check_deployment.sh sunbird-rc
