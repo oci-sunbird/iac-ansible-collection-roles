@@ -7,8 +7,12 @@
     update_repo_cache: true
     values:
       certificateapienv:
-        CERTIFICATE_PUBLIC_KEY: "{{sbrc_certificate_public_key}}"
-        CERTIFICATE_PRIVATE_KEY: "{{sbrc_certificate_private_key}}"
+        # CERTIFICATE_PUBLIC_KEY: "{{sbrc_certificate_public_key}}"
+        # CERTIFICATE_PRIVATE_KEY: "{{sbrc_certificate_private_key}}"
+        CERTIFICATE_PUBLIC_KEY: |- 
+          {{ sbrc_certificate_public_key | default("''") | indent(width=4) }}
+        CERTIFICATE_PRIVATE_KEY: |-
+          {{ sbrc_certificate_private_key | default("''") | indent(width=4) }}
 
 - name: Wait for deployments in sunbird-rc namespace
   shell: bash /root/check_deployment.sh sunbird-rc
