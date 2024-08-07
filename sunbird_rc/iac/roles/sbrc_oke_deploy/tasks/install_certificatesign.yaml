@@ -7,9 +7,9 @@
     update_repo_cache: true
     values:
       certificatesignenv:
-        CERTIFICATE_PUBLIC_KEY: |
+        CERTIFICATE_PUBLIC_KEY: |-
           {{ sbrc_certificate_public_key | b64decode }}       
-        CERTIFICATE_PRIVATE_KEY: |
+        CERTIFICATE_PRIVATE_KEY: |-
           {{ sbrc_certificate_private_key | b64decode }}
 
 
