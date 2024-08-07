@@ -7,10 +7,11 @@
     update_repo_cache: true
     values:
       certificatesignenv:
-        # CERTIFICATE_PUBLIC_KEY: "{{sbrc_certificate_public_key}}"
-        # CERTIFICATE_PRIVATE_KEY: "{{sbrc_certificate_private_key}}"
-        CERTIFICATE_PUBLIC_KEY: "{{ sbrc_certificate_public_key }}"       
-        CERTIFICATE_PRIVATE_KEY: "{{ sbrc_certificate_private_key }}"
+        CERTIFICATE_PUBLIC_KEY: |
+          {{ sbrc_certificate_public_key | b64decode | indent(width=4) }}       
+        CERTIFICATE_PRIVATE_KEY: |
+          {{ sbrc_certificate_private_key | b64decode | indent(width=4) }}
+
 
 
 - name: Wait for deployments in sunbird-rc namespace
