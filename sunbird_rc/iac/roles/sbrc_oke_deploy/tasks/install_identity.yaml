@@ -22,9 +22,3 @@
 
 - name: Wait for deployments in sunbird-rc namespace
   shell: bash /root/check_deployment.sh sunbird-rc
-
-
-  sunbird: 
-    enable_auth: false 
-    signing_algo: Ed25519Signature2020
-    jwks_uri: ""
