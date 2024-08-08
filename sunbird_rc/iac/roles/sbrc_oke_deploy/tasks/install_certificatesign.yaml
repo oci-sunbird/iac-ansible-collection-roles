@@ -7,7 +7,6 @@
     update_repo_cache: true
     values:
       certificatesignenv:
-        CUSTOM_TEMPLATE_DELIMITERS: "{{,}}"
         QR_TYPE: W3C-VC
         CERTIFICATE_PUBLIC_KEY: |- 
           {{ sbrc_certificate_public_key | b64decode }}
