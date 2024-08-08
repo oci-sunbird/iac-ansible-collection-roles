@@ -12,9 +12,19 @@
     values:
       global:
         host: "sbrciam.{{domain}}"
+        sunbird: 
+          enable_auth: false 
+          signing_algo: RsaSignature2018
+          jwks_uri: "https://sbrciam.openg2p.ocloud.today/auth/realms/sunbird-rc/protocol/openid-connect/certs"
         secrets:
           VAULT_SECRET_TOKEN: "{{vault_root_token |b64encode }}"
           DB_URL: "{{db_url |b64encode}}"
 
 - name: Wait for deployments in sunbird-rc namespace
   shell: bash /root/check_deployment.sh sunbird-rc
+
+
+  sunbird: 
+    enable_auth: false 
+    signing_algo: Ed25519Signature2020
+    jwks_uri: ""
