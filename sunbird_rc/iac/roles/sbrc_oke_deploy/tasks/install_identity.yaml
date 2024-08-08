@@ -15,7 +15,7 @@
         sunbird: 
           enable_auth: false 
           signing_algo: RsaSignature2018
-          jwks_uri: "https://sbrciam.openg2p.ocloud.today/auth/realms/sunbird-rc/protocol/openid-connect/certs"
+          jwks_uri: "https://sbrciam.{{domain}}/auth/realms/sunbird-rc/protocol/openid-connect/certs"
         secrets:
           VAULT_SECRET_TOKEN: "{{vault_root_token |b64encode }}"
           DB_URL: "{{db_url |b64encode}}"
