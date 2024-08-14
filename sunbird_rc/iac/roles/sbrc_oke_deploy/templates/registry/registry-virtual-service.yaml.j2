@@ -10,8 +10,10 @@ spec:
   http:
   - name: "registry"
     match:
-      - uri 
-          prefix: "/registry"
+      - uri:
+          prefix: "/registry/"
+    rewrite:
+      uri: "/"
     route:
       - destination:
           host: registry
