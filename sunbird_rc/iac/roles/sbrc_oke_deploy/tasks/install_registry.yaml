@@ -6,7 +6,7 @@
     create_namespace: true
     update_repo_cache: true
     values:
-      image_tag: v2.0.0
+      image_tag: v2.0.1
       rccoreenv:
         connectionInfo_uri: "{{registry_db_url}}"
         connectionInfo_username: "{{postgres_connectionInfo_username}}"
@@ -21,10 +21,6 @@
         claims_enabled: true
         signature_enabled: true
         did_enabled: true
-        # credential_did_method: rcw
-        # issuer_did_method : issuer
-        # schema_author: Registry
-        # schema_author_did_method: author
         signature_provider: dev.sunbirdrc.registry.service.impl.SignatureV2ServiceImpl
         did_health_check_url: http://identity-identity-service:3332/health 
         did_generate_url: http://identity-identity-service:3332/did/generate  
