@@ -9,7 +9,7 @@
 # - include_tasks: install_certificateapi.yaml
 # - include_tasks: install_certificatesign.yaml
 # - include_tasks: install_vault.yaml
-- include_tasks: install_identity.yaml
+# - include_tasks: install_identity.yaml
 # - include_tasks: install_claim_ms.yaml
 # - include_tasks: install_elasticsearch.yaml
 # - include_tasks: install_filestorage.yaml
