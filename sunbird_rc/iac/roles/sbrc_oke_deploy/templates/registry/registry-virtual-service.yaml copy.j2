@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: registry
+spec:
+  gateways:
+    - istio-system/all-hosts
+  hosts:
+    - sbrc.{{domain}}
+  http:
+    - route:
+        - destination:
+            host: registry
+            port:
+              number: 8081
+      headers:
+        request:
+          set:
+            x-forwarded-proto: https
