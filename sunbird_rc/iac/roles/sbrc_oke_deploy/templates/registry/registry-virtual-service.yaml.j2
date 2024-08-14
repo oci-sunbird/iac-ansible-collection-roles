@@ -68,18 +68,4 @@ spec:
       request:
         set:
           x-forwarded-proto: https  
-  - name: "vault"
-    match:
-      - uri:
-          prefix: "/vault/"
-    rewrite:
-      uri: "/"
-    route:
-      - destination:
-          host: vault.vault
-          port: 
-            number: 8200
-    headers:
-      request:
-        set:
-          x-forwarded-proto: https  
+ 
