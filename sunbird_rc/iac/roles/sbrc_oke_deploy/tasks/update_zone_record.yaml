@@ -4,10 +4,6 @@
     name: "{{domain}}"
   register: result
   
-# - name: Dump result
-#   debug: 
-#     msg: '{{result}}'
-
 
 - name: Create zone 
   oracle.oci.oci_dns_zone:
@@ -43,4 +39,5 @@
     - sbrc
     - sbrciam
     - sbrcfs
+    - sbrcvault
     

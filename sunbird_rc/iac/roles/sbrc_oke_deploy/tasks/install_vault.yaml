@@ -49,3 +49,11 @@
   file:
     path: /root/sunbird-rc/customization/vault/cluster-keys.json
     state: absent
+
+- name: "Update vault virtual service config"
+  template:
+    src: "vault/vault-virtual-service.yaml.j2"
+    dest: "/root/sunbird-rc/customization/vault/vault-virtual-service.yaml"
+
+- name: Create vault virtual service
+  shell: kubectl -n vault apply -f /root/sunbird-rc/customization/vault/vault-virtual-service.yaml

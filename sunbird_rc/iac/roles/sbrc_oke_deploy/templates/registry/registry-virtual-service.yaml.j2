@@ -8,12 +8,64 @@ spec:
   hosts:
     - sbrc.{{domain}}
   http:
-    - route:
-        - destination:
-            host: registry
-            port:
-              number: 8081
-      headers:
-        request:
-          set:
-            x-forwarded-proto: https
+  - name: "registry"
+    match:
+      - uri:
+          prefix: "/registry/"
+    rewrite:
+      uri: "/"
+    route:
+      - destination:
+          host: registry
+          port: 
+            number: 8081
+    headers:
+      request:
+        set:
+          x-forwarded-proto: https      
+  - name: "identity"
+    match:
+      - uri:
+          prefix: "/identity/"
+    rewrite:
+      uri: "/"
+    route:
+      - destination:
+          host: identity-identity-service
+          port: 
+            number: 3332
+    headers:
+      request:
+        set:
+          x-forwarded-proto: https  
+  - name: "schema"
+    match:
+      - uri:
+          prefix: "/schema/"
+    rewrite:
+      uri: "/"
+    route:
+      - destination:
+          host: identity-credential-schema-service
+          port: 
+            number: 3333
+    headers:
+      request:
+        set:
+          x-forwarded-proto: https  
+  - name: "credential"
+    match:
+      - uri:
+          prefix: "/credential/"
+    rewrite:
+      uri: "/"
+    route:
+      - destination:
+          host: identity-credentials-service
+          port: 
+            number: 3000
+    headers:
+      request:
+        set:
+          x-forwarded-proto: https  
+ 

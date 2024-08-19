@@ -11,7 +11,16 @@
     update_repo_cache: true
     values:
       global:
-        host: "sbrc.{{domain}}"
+        host: "sbrciam.{{domain}}"
+        sunbird: 
+          enable_auth: false 
+          signing_algo: Ed25519Signature2020
+          jwks_uri: "https://sbrciam.{{domain}}/auth/realms/sunbird-rc/protocol/openid-connect/certs"
+        base_urls:
+          identity: https://sbrc.{{domain}}/identity
+          web_did: https://sbrc.{{domain}}/identity
+          credential_schema: https://sbrc.{{domain}}/schema
+          credential_service: https://sbrc.{{domain}}/credential
         secrets:
           VAULT_SECRET_TOKEN: "{{vault_root_token |b64encode }}"
           DB_URL: "{{db_url |b64encode}}"

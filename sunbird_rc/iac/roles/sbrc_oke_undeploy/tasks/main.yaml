@@ -57,6 +57,7 @@
     - sbrc
     - sbrciam
     - sbrcfs
+    - sbrcvault
 
 - name: Uninstall istio service mesh
   shell: |
