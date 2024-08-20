@@ -2,6 +2,14 @@
   include_vars:
     file: "{{ inventory_dir }}/vault_secrets.yaml"
 
+- name: "Update identity virtual service config"
+  template:
+    src: "identity/identity-virtual-service.yaml.j2"
+    dest: "/root/sunbird-rc/customization/identity/identity-virtual-service.yaml"
+
+- name: Create identity virtual service
+  shell: kubectl -n sunbird-rc apply -f /root/sunbird-rc/customization/identity/identity-virtual-service.yaml
+
 - name: Install identity
   kubernetes.core.helm:
     name: identity
