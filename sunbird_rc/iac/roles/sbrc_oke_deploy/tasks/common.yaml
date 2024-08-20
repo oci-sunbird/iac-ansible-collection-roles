@@ -86,6 +86,7 @@
     - /root/sunbird-rc/customization/filestorage
     - /root/sunbird-rc/customization/keycloak
     - /root/sunbird-rc/customization/registry
+    - /root/sunbird-rc/customization/identity
     - /root/sunbird-rc/customization/cert-manager
     - /root/sunbird-rc/customization/outputs
 
